@@ -1,0 +1,8 @@
+
+=> update lambda
+aws lambda update-function-code --function-name test --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
+
+
+
+=> upload to s3
+aws s3 cp a.jpg s3://image-processing-app-uploads/ --region "us-east-1"

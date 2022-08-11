@@ -45,20 +45,65 @@ public class Handler implements RequestHandler<S3Event, String> {
 
     @Override
     public String handleRequest(S3Event s3event, Context context) {
-        try {
-            logger.info("EVENT: " + gson.toJson(s3event));
-          /*  S3EventNotificationRecord record = s3event.getRecords().get(0);
 
+
+        logger.info("hii");
+        logger.info("EVENT: " + gson.toJson(s3event));
+
+        S3EventNotificationRecord record = s3event.getRecords().get(0);
+        String srcBucket = record.getS3().getBucket().getName();
+
+        logger.info("SRC BUCKET: " + srcBucket);
+
+        // Object key may have spaces or unicode non-ASCII characters.
+        String srcKey = record.getS3().getObject().getUrlDecodedKey();
+
+
+        AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
+        S3Object s3Object = s3Client.getObject(new GetObjectRequest(
+                srcBucket, srcKey));
+        InputStream objectData = s3Object.getObjectContent();
+
+
+        try {
+            BufferedImage srcImage = ImageIO.read(objectData);
+            try {
+                String dstBucket = "image-processing-app-destination";
+                String dstKey = "resized-" + srcKey;
+                s3Client.putObject(dstBucket, dstKey, objectData, new ObjectMetadata());
+            } catch (AmazonServiceException e) {
+                logger.info("Write failed");
+                logger.error(e.getErrorMessage());
+                System.exit(1);
+            }
+        } catch (IOException e) {
+            logger.info("Error reading image");
+            e.printStackTrace();
+        }
+
+
+        return "Okss";
+
+        /*
+        try {
+            logger.info("hii");
+            logger.info("EVENT: " + gson.toJson(s3event));
+
+
+
+            S3EventNotificationRecord record = s3event.getRecords().get(0);
             String srcBucket = record.getS3().getBucket().getName();
 
             // Object key may have spaces or unicode non-ASCII characters.
             String srcKey = record.getS3().getObject().getUrlDecodedKey();
 
-            String dstBucket = srcBucket;
+
+            String dstBucket = "image-processing-app-destination";
             String dstKey = "resized-" + srcKey;
 
+
             // Infer the image type.
-            Matcher matcher = Pattern.compile(".*\\.([^\\.]*)").matcher(srcKey);
+         *//*   Matcher matcher = Pattern.compile(".*\\.([^\\.]*)").matcher(srcKey);
             if (!matcher.matches()) {
                 logger.info("Unable to infer image type for key " + srcKey);
                 return "";
@@ -67,7 +112,7 @@ public class Handler implements RequestHandler<S3Event, String> {
             if (!(JPG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType))) {
                 logger.info("Skipping non-image " + srcKey);
                 return "";
-            }
+            }*//*
 
             // Download the image from S3 into a stream
             AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
@@ -76,7 +121,7 @@ public class Handler implements RequestHandler<S3Event, String> {
             InputStream objectData = s3Object.getObjectContent();
 
             // Read the source image
-            BufferedImage srcImage = ImageIO.read(objectData);
+          *//*  BufferedImage srcImage = ImageIO.read(objectData);
             int srcHeight = srcImage.getHeight();
             int srcWidth = srcImage.getWidth();
             // Infer the scaling factor to avoid stretching the image
@@ -111,25 +156,24 @@ public class Handler implements RequestHandler<S3Event, String> {
             if (PNG_TYPE.equals(imageType)) {
                 meta.setContentType(PNG_MIME);
             }
-
+*//*
             // Uploading to S3 destination bucket
             logger.info("Writing to: " + dstBucket + "/" + dstKey);
             try {
-                s3Client.putObject(dstBucket, dstKey, is, meta);
+                s3Client.putObject(dstBucket, dstKey, objectData, new ObjectMetadata());
             }
             catch(AmazonServiceException e)
             {
+                logger.info("Write failed");
                 logger.error(e.getErrorMessage());
                 System.exit(1);
             }
             logger.info("Successfully resized " + srcBucket + "/"
                     + srcKey + " and uploaded to " + dstBucket + "/" + dstKey);
             return "Ok";
-            */
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
-        return "OK";
     }
 }
