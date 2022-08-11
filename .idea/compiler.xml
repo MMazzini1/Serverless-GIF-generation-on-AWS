@@ -9,5 +9,8 @@
         <module name="Lambda-functions" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Lambda-functions" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

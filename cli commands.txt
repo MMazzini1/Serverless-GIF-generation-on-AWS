@@ -6,3 +6,48 @@ aws lambda update-function-code --function-name test --zip-file fileb://Lambda-f
 
 => upload to s3
 aws s3 cp a.jpg s3://image-processing-app-uploads/ --region "us-east-1"
+
+
+
+FRONT END 
+
+UPLOAD
+- Host static website with index.html + some js. Enable CORS?
+- Create Api gateway project
+- Enable CORS on API gateway
+- Api gateway POST call lambda, url /image/upload
+	- check method is called
+	- Create FORM for uploading FILE
+	- Check lambda receives file
+	- Validate file Size and Image Type
+	- Assing Role for lambda to write to S3 Upload Bucket
+	- Save to S3 with UUUID
+	- Returns UUIID
+
+GET
+- BUTTON for GET image request
+- APi gateway with GET lambda url /image/get/UUID
+	- check method is called
+	- Role for reading Destination Bucket
+	- Read Image from S3
+	- Return image to user
+
+SHORT POLLING
+- js logic After receiving Image Id from UPLOAD Request, initiate short polling to GET
+- Showing Image in front-end.
+- Download button HTML?
+- GIFs visualized in front-end correctly?
+
+
+
+FANOUT
+- For processing in parallel I need SQS
+
+IMAGE PROCESSING
+- Lambda triggered by bucket - done
+- Lambda reading Image from bucket and saving it to another - done
+- Image processing Logic - TODO
+- Converting to GIF
+
+
+API GATEWAY <=> LAMBDA => LAMBDA * 1 => S3 => 
