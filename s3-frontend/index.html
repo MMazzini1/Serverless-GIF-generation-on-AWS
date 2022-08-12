@@ -9,19 +9,92 @@
 <body>
 <div id="layout">
     <div id="results">
-        <table>
-            <tbody>
-            <tr>
-                <th rowspan="1"><strong>Znode Id</strong></th>
-                <th rowspan="1"><strong>Type</strong></th>
-                <th rowspan="1"><strong>Watching Znode </strong></th>
-                <th rowspan="1"><strong>Address </strong></th>
-                <th rowspan="1"><strong>Kill instance </strong></th>
 
-            </tr>
+        <div>
+            <h1>Single File Uploadd</h1>
+            <input type="file" id="file-uploader"  accept=".jpg, .png">
+            <p>Upload a file and see the output in browser console</p>
 
-            </tbody>
-        </table>
+            <p id="feedback"></p>
+        </div>
+
+        <div class="container">
+            <h1>Multipart File Upload</h1>
+            <form id="form" enctype="multipart/form-data">
+                <div class="input-group">
+                    <label for="files">Select files</label>
+                    <input id="file" type="file" multiple />
+                </div>
+                <button class="submit-btn" type="submit">Upload</button>
+            </form>
+        </div>
+        <script src="index.js"></script>
+
+        <script>
+            const fileUploader = document.getElementById('file-uploader');
+
+            fileUploader.addEventListener('change', (event) => {
+                const files = event.target.files;
+                const file = event.target.files[0];
+                console.log('files', files);
+
+
+
+
+                // show the upload feedback
+                const size = file.size;
+                const feedback = document.getElementById('feedback');
+                var msg = `File ${files[0].name} uploaded successfully!`;
+
+
+                if (size > 1024 * 1024) {
+                    msg = `<span style="color:red;">The allowed file size is 1MB. The file you are trying to upload is of ${returnFileSize(size)}</span>`;
+                } else {
+                    msg = `<span style="color:green;"> A ${returnFileSize(size)} file has been uploaded successfully. </span>`;
+                }
+
+                feedback.innerHTML = msg;
+
+
+
+            });
+
+            function returnFileSize(number) {
+                if (number < 1024) {
+                    return number + 'bytes';
+                } else if (number >= 1024 && number < 1048576) {
+                    return (number / 1024).toFixed(2) + 'KB';
+                } else if (number >= 1048576) {
+                    return (number / 1048576).toFixed(2) + 'MB';
+                }
+            }
+
+
+
+
+            const form = document.getElementById("form");
+            const inputFile = document.getElementById("file");
+
+            const formData = new FormData();
+
+            const handleSubmit = (event) => {
+                event.preventDefault();
+
+                for (const file of inputFile.files) {
+                    formData.append("files", file);
+                }
+
+                fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/image", {
+                    method: "post",
+                    body: formData,
+                }).catch((error) => ("Something went wrong!", error));
+            };
+
+            form.addEventListener("submit", handleSubmit)
+
+        </script>
+
+
     </div>
     <div id>
 

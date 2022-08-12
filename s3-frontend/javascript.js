@@ -5,11 +5,11 @@ $(document).ready(function () {
     var button = $("#submit_button");
     var resultsTable = $("#results table tbody");
 
-
+/*
     const interval = setInterval(function () {
         console.log("Getting cluster state")
         getClusterState()
-    }, 1000);
+    }, 1000);*/
 
 
     button.on("click", function () {
