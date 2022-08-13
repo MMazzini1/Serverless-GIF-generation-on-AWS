@@ -1,6 +1,5 @@
 const GET_GIF_URL = "https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-destination/"
 
-
 async function settingGif(id) {
     const res = await fetchGif(id)
     console.log(res)
@@ -63,9 +62,7 @@ function startShortPollingForGif(id) {
 
 
 function fetchGif(id) {
-    return fetch(GET_GIF_URL + id
-      //  {headers: {'accept': ' image/gif'}
-       )
+    return fetch(GET_GIF_URL + id)
 }
 
 function createDownloadButton(blob) {
@@ -84,10 +81,5 @@ function createDownloadButton(blob) {
 
     return button
 
-}
-
-
-function onNotFound(data, status) {
-    console.log("error")
 }
 
