@@ -43,10 +43,13 @@ function startShortPollingForGif(id) {
         console.log("fetching")
         fetchGif(id)
             .then(response => {
-                console.log("Stopping short polling, response => ")
-                console.log(response)
-                replacingGif(id)
-                clearInterval(interval)
+                if (response.status == "200"){
+                    console.log("Stopping short polling on 200")
+                    clearInterval(interval)
+                    replacingGif(id)
+                }else if (response.status == "404"){
+                    console.log("404, result not yet available")
+                }
             })
             .catch(
                 error => {
@@ -60,8 +63,9 @@ function startShortPollingForGif(id) {
 
 
 function fetchGif(id) {
-    return fetch(GET_GIF_URL + id,
-        {headers: {'accept': ' image/gif'}})
+    return fetch(GET_GIF_URL + id
+      //  {headers: {'accept': ' image/gif'}
+       )
 }
 
 function createDownloadButton(blob) {

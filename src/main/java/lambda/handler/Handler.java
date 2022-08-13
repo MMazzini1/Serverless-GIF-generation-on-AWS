@@ -75,11 +75,13 @@ public class Handler implements RequestHandler<S3Event, String> {
         // Object key may have spaces or unicode non-ASCII characters.
         String srcKey = record.getS3().getObject().getUrlDecodedKey();
         String imageType = imageUtils.determineImageType(srcKey);
+
+        String mimeType = imageUtils.getMimeType(imageType);
         if (imageType.equals("")) {
             return "";
         }
 
-        logger.info("Src bucket: " + srcBucket + " key:" + srcKey + " Img type: " + imageType);
+        logger.info("Src bucket: " + srcBucket + " key:" + srcKey + " Img type: " + imageType + " mime type: " + mimeType);
 
 
 
@@ -127,6 +129,7 @@ public class Handler implements RequestHandler<S3Event, String> {
 
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(dstBucket)
+                        .contentType(mimeType)
                         .key(dstKey)
                         .build();
 

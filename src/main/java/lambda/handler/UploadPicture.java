@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.MetadataEntry;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 
@@ -103,17 +104,18 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
 
 
             String mimeType = URLConnection.guessContentTypeFromStream(fis);
-            logger.info("File ctt type: " + mimeType);
+            logger.info("File mime type: " + mimeType);
 
 
             //Put file into S3
 
 
-
-            String objectKey = UUID.randomUUID() + "." + imageUtils.getFileTypeFromMimeType(mimeType);
+            String fileType = imageUtils.getFileTypeFromMimeType(mimeType);
+            String objectKey = UUID.randomUUID() + "." + fileType;
 
             PutObjectRequest objectRequest = PutObjectRequest.builder()
                     .bucket(UPLOAD_BUCKET_NAME)
+                    .contentType(mimeType)
                     .key(objectKey)
                     .build();
 
