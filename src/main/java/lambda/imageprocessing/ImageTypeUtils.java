@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ImageUtils {
+public class ImageTypeUtils {
 
 
     private static final Logger logger = LoggerFactory.getLogger(CreateBlurGif.class);
@@ -52,6 +52,12 @@ public class ImageUtils {
         }
         return "";
     }
+
+
+
+
+
+
 
 
 }

@@ -1,6 +1,5 @@
 package lambda.handler;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
@@ -24,8 +23,7 @@ import software.amazon.awssdk.regions.Region;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import lambda.imageprocessing.ImageProcessing;
-import lambda.imageprocessing.ImageUtils;
+import lambda.imageprocessing.ImageTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -42,12 +40,12 @@ public class CreateBlurGif implements RequestHandler<S3Event, String> {
     private static final Logger logger = LoggerFactory.getLogger(CreateBlurGif.class);
     private static final float MAX_WIDTH = 2000;
     private static final float MAX_HEIGHT = 2000;
-    private ImageUtils imageUtils;
+    private ImageTypeUtils imageUtils;
     private S3Client s3Client;
 
 
     public CreateBlurGif() {
-        imageUtils = new ImageUtils();
+        imageUtils = new ImageTypeUtils();
         Region region = Region.US_EAST_1;
         s3Client = S3Client.builder()
                 .region(region)

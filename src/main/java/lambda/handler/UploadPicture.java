@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lambda.imageprocessing.ImageUtils;
+import lambda.imageprocessing.ImageTypeUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.MultipartStream;
 import com.amazonaws.AmazonServiceException;
@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.MetadataEntry;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 
@@ -34,12 +33,12 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
 
     private static final Logger logger = LoggerFactory.getLogger(UploadPicture.class);
     public static final String UPLOAD_BUCKET_NAME = "image-processing-app-uploads";
-    private ImageUtils imageUtils;
+    private ImageTypeUtils imageUtils;
     private Gson gson;
     private S3Client s3Client;
 
     public UploadPicture() {
-        this.imageUtils = new ImageUtils();
+        this.imageUtils = new ImageTypeUtils();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         Region region = Region.US_EAST_1;
         s3Client = S3Client.builder()
