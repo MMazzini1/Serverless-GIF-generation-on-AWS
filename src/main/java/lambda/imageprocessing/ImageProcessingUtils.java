@@ -32,8 +32,12 @@ public class ImageProcessingUtils {
         return resizedImage;
     }
 
-    
 
+
+    /** Calculates average color of a portion of an image .
+     * x0, y0, coords of left top corner
+     * w,h, width and height from the left top corner
+     * */
     public static Color averageColor(BufferedImage bi, int x0, int y0, int w,
                                      int h) {
         int x1 = x0 + w;
@@ -55,6 +59,8 @@ public class ImageProcessingUtils {
         return new Color(r, g, b);
     }
 
+
+    /**  sets color to image */
     private void setColor(BufferedImage bufferedImage, Color color) {
         for (int i = 0; i < bufferedImage.getWidth(); i++) {
             for (int j = 0; j < bufferedImage.getHeight(); j++) {
@@ -63,6 +69,8 @@ public class ImageProcessingUtils {
         }
     }
 
+
+    /** Joins multiple fragments of an image in one single image */
     public BufferedImage joinImagePortions(List<ImagePortion> imagesToJoin, Integer width, Integer height) {
         BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D g2 = newImage.createGraphics();
