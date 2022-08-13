@@ -32,13 +32,11 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-
     private static final Logger logger = LoggerFactory.getLogger(UploadPicture.class);
     public static final String UPLOAD_BUCKET_NAME = "image-processing-app-uploads";
     private ImageUtils imageUtils;
     private Gson gson;
     private S3Client s3Client;
-
 
     public UploadPicture() {
         this.imageUtils = new ImageUtils();
@@ -47,85 +45,25 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
         s3Client = S3Client.builder()
                 .region(region)
                 .build();
-
     }
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
-
-        //Create the logger LambdaLogger
-        logger.info("Loading Java Lambda handler of Proxy");
-        logger.info("API GATEWAY EVENT: " + gson.toJson(event));
-
-        //Log the length of the incoming body      
-        logger.info("Byte length: " + String.valueOf(event.getBody().getBytes().length));
-
-        //Create the APIGatewayProxyResponseEvent response     
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
-
-        //Set up contentType 
-        String contentType = "";
-
-        //Change these values to fit your region and bucket name
-        //Every file will be named image.jpg in this example. 
-        //You will want to do something different here in production 
-
-
         try {
-            //Get the uploaded file and decode from base64 
-            byte[] bI = Base64.decodeBase64(event.getBody().getBytes());
 
-            //Get the content-type header  
-            Map<String, String> hps = event.getHeaders();
-
-            if (hps != null) {
-                contentType = hps.get("content-type");
-                logger.info("Content type: " + contentType);
-            }
-
-            //Extract the boundary
-            String[] boundaryArray = contentType.split("=");
-
-            //Transform the boundary to a byte array 
-            byte[] boundary = boundaryArray[1].getBytes();
-
-            //Log the extraction for verification purposes 
-
-
-            //Create a ByteArrayInputStream 
-            ByteArrayOutputStream out = readMultiPart(bI, boundary);
-
-            //Log completion of MultipartStream processing 
-            logger.info("Data written to ByteStream");
-
+            ByteArrayOutputStream out = multipartProcess(event);
             //Prepare an InputStream from the ByteArrayOutputStream      
             InputStream fis = new ByteArrayInputStream(out.toByteArray());
 
-
-
             String mimeType = URLConnection.guessContentTypeFromStream(fis);
+            String fileType = imageUtils.getFileTypeFromMimeType(mimeType);
             logger.info("File mime type: " + mimeType);
 
-
-            //Put file into S3
-
-
-            String fileType = imageUtils.getFileTypeFromMimeType(mimeType);
             String objectKey = UUID.randomUUID() + "." + fileType;
+            uploadToS3(out, mimeType, objectKey);
 
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(UPLOAD_BUCKET_NAME)
-                    .contentType(mimeType)
-                    .key(objectKey)
-                    .build();
-
-            s3Client.putObject(objectRequest, RequestBody.fromBytes(out.toByteArray()));
-
-
-
-            //Log status 
             logger.info("Object saved in S3");
-
             buildResponse(response, objectKey);
 
         } catch (AmazonServiceException e) {
@@ -145,6 +83,44 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
 
         //logger.info(response.toString());
         return response;
+    }
+
+    private void uploadToS3(ByteArrayOutputStream out, String mimeType, String objectKey) {
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(UPLOAD_BUCKET_NAME)
+                .contentType(mimeType)
+                .key(objectKey)
+                .build();
+        s3Client.putObject(objectRequest, RequestBody.fromBytes(out.toByteArray()));
+    }
+
+    private ByteArrayOutputStream multipartProcess(APIGatewayProxyRequestEvent event) throws IOException {
+
+        //Set up contentType
+        String contentType = "";
+
+        byte[] bI = Base64.decodeBase64(event.getBody().getBytes());
+
+        //Get the content-type header
+        Map<String, String> hps = event.getHeaders();
+
+        if (hps != null) {
+            contentType = hps.get("content-type");
+            logger.info("Content type: " + contentType);
+        }
+
+        //Extract the boundary
+        String[] boundaryArray = contentType.split("=");
+
+        //Transform the boundary to a byte array
+        byte[] boundary = boundaryArray[1].getBytes();
+
+        //Create a ByteArrayInputStream
+        ByteArrayOutputStream out = readMultiPart(bI, boundary);
+
+        //Log completion of MultipartStream processing
+        logger.info("Data written to ByteStream");
+        return out;
     }
 
     private ByteArrayOutputStream readMultiPart(byte[] bI, byte[] boundary) throws IOException {

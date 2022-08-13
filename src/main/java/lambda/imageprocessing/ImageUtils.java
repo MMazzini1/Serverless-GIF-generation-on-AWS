@@ -1,6 +1,6 @@
 package lambda.imageprocessing;
 
-import lambda.handler.Handler;
+import lambda.handler.CreateBlurGif;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class ImageUtils {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+    private static final Logger logger = LoggerFactory.getLogger(CreateBlurGif.class);
     private final String JPG_TYPE = (String) "jpg";
     private final String JPG_MIME = (String) "image/jpeg";
     private final String PNG_TYPE = (String) "png";

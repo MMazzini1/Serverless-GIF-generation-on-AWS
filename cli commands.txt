@@ -1,7 +1,6 @@
 
 => update lambda
-aws lambda update-function-code --function-name test --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
-
+ aws lambda update-function-code --function-name create-blur-gif --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
 
 
 => upload to s3
@@ -88,13 +87,20 @@ IMAGE PROCESSING
 
 
 BIG FIXES
-- SOLUCIOANR CORS ON ERROR
-- QUE LA API GATEWAY DEVUELVA 404...NO 500
+- SOLUCIOANR CORS ON ERROR ===> DONE
+- QUE LA API GATEWAY DEVUELVA 404...NO 500  ===> DONE 
 - FIJARSE SI EL LOG TIRA MAL EL SDK CLIENT
-- VER IS Y OS , Y SIZE, EN LAMBDAS
-- QUE EL SHORT POLLING SOLO SEA EN 404, X CIERTO TIEMPO, Y DESPUES PARE. 
+- VER IS Y OS , Y SIZE, EN LAMBDAS 
+- QUE EL SHORT POLLING SOLO SEA EN 404, X CIERTO TIEMPO, Y DESPUES PARE.   ===> DONE
+
+-FIX LOGGING
+-FIX XRAY
 
 
+- MODAL CARGANDO DURANTE EL UPLOAD
+- MODARL PROCESAMIENTO 
+- VALIDACION LIMITE 6MB LAMBDA  === > 
+- FIX CORS 413....SI VALIDO NO HACE FALTA
 
 
 
