@@ -1,88 +1,87 @@
-$(document).ready(function () {
-    console.log("ready!");
 
-    var banner = $("#banner-message");
-    var button = $("#submit_button");
-    var resultsTable = $("#results table tbody");
+const  GET_GIF_URL = "https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/"
 
-/*
+
+
+
+async function settingGif(id){
+    const res = await fetchGif(id)
+    console.log(res)
+    const blob = await res.blob()
+    const img = new Image()
+    img.id = "GifImg"
+    img.src = URL.createObjectURL(blob)
+
+    img.width = 600
+    img.heigh = 600
+
+    var button = createDownloadButton(blob)
+
+    document.getElementById("download").appendChild(button)
+    document.getElementById("img").prepend(img)
+}
+
+async function replacingGif(id){
+    const res = await fetchGif(id)
+    console.log(res)
+    const blob = await res.blob()
+    const img = new Image()
+    img.id = "GifImg"
+    img.src = URL.createObjectURL(blob)
+
+    img.width = 600
+    img.heigh = 600
+
+    var button = createDownloadButton(blob)
+
+    document.getElementById("Button").replaceWith(button)
+    document.getElementById("GifImg").replaceWith(img)
+
+}
+
+
+function startShortPollingForGif(id) {
+    console.log("Initializing short polling for " +  id)
     const interval = setInterval(function () {
-        console.log("Getting cluster state")
-        getClusterState()
-    }, 1000);*/
-
-
-    button.on("click", function () {
-        banner.addClass("alt");
-        getClusterState()
-    });
-
-
-    function getClusterState() {
-        $.ajax({
-            method: "GET",
-            contentType: "application/json",
-            url: "/cluster/summary",
-            dataType: "json",
-            success: onHttpResponse,
-            error: onNotFound
-        });
-    }
-
-    function onHttpResponse(data, status) {
-        if (status === "success") {
-            console.log(data);
-            addResults(data)
-        } else {
-            alert("Error connecting to the server " + status);
-        }
-    }
-
-    function onNotFound(data, status) {
-        resultsTable.children('tr:not(:first)').remove();
-        resultsTable.append("<tr>" +
-            "<td id='aa'>" + "LEADER" + "</td>" +
-            "<td>" + "UNAVAILABLE" + "</td>" +
-            "<td>" + "REELECTION" + "</td>" +
-            "<td>" + "IN" + "</td>" +
-            "<td>" + "PROGRESS" + "</td>" +
-            "</tr>");
-
-    }
-
-    function addResults(data) {
-
-        resultsTable.children('tr:not(:first)').remove();
-
-        data.forEach(data => {
-            row = data
-            var id = row.leaderElectionZnode;
-            var followingId = row.predecessorLeaderElectionZnode;
-            var status = row.clusterStatus
-            var address = row.address
-
-            var button = document.createElement("button");
-            button.innerText = "KILL";
-            button.addEventListener("click", function () {
-                $.ajax({
-                    method: "POST",
-                    contentType: "application/json",
-                    url: "http://localhost:8080/kill?address=" + address,
-                    dataType: "json",
-                });
+        console.log("fetching")
+        fetchGif(id)
+            .then(response => {
+                console.log("Stopping short polling")
+                replacingGif(id)
+                clearInterval(interval)
             })
+            .catch(error => console.log("Error getting GIF"))
+    }, 2000);
+}
 
-            resultsTable.append("<tr>" +
-                "<td id='aa'>" + id + "</td>" +
-                "<td>" + status + "</td>" +
-                "<td>" + followingId + "</td>" +
-                "<td>" + address + "</td>" +
-                "<td id=" + id + "></td>" +
-                "</tr>");
 
-            $("#" + id).append(button)
 
-        })
+function fetchGif(id) {
+    return fetch(GET_GIF_URL + id,
+        {headers: {'accept': ' image/gif'}})
+        .catch(error => console.log("ERROR getting S3 GIF " + error))
+}
 
-    }
-});
+function createDownloadButton(blob){
+    let a = document.createElement('a');
+    a.download = 'myGif';
+    a.href = window.URL.createObjectURL(blob);
+    a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
+
+    let button = document.createElement('button');
+    button.id = "Button"
+    button.innerText = "Download gif"
+
+    button.addEventListener("click", function () {
+        a.click()
+    })
+
+    return button
+
+}
+
+
+function onNotFound(data, status) {
+    console.log("error")
+}
+

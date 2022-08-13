@@ -1,113 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Distributed Search</title>
+    <title>Image Processing App</title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <script type="text/javascript" src="javascript.js"></script>
 </head>
 <body>
 <div id="layout">
-    <div id="results">
-
-        <div>
-            <h1>Single File Uploadd</h1>
-            <input type="file" id="file-uploader" accept=".jpg, .png">
-            <p>Upload a file and see the output in browser console</p>
-
-            <p id="feedback"></p>
-        </div>
 
 
-        <div id="img">
-            <div id="download">    DOWNLAODDDD   </div>
-            <p>IMAGE BELOW!</p>
-        </div>
+    <div id="info">
+        <h2>Serverless GIF generation on AWS</h2>
+        <p>I created this site to generate some cool GIFs starting from an image, applying some custom algorithms. </p>
+        <p>The site is hosted on AWS, has a complete serverless architechture, and uses
+            S3, ApiGateway, Lambda, SNS and SQS. For a site this simple it´s clearly an overkill. It´s mostly created as
+            a
+            way to
+            consolidate my AWS learning. The source code and a detailed explanation can be found on GitHub.
+        </p>
+    </div>
 
-
-
-        <script>
-            (async () => {
-                // epidoto2.jpg
-                //   WORKING URL ==>       https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/makeGifRapido.gif
-                const res = await fetch('https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/makeGifRapido.gif',
-                    {
-                        headers: {
-                            'accept': ' image/gif'
-                            // 'Content-Type': 'application/x-www-form-urlencoded',
-                        }
-
-                    })
-                const blob = await res.blob()
-                console.log(res)
-                console.log(blob)
-                const img = new Image()
-                img.src = URL.createObjectURL(blob)
-
-
-                let a = document.createElement('a');
-                // get image as blob
-                // use download attribute https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#Attributes
-                a.download = 'myGif';
-                a.href = window.URL.createObjectURL(blob);
-                //store download url in javascript https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes#JavaScript_access
-                a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
-
-                //click on element to start download
-
-                let button = document.createElement('button');
-                button.innerText = "DOWNLOADD GIF"
-
-                button.addEventListener("click", function () {
-                    a.click()
-                })
-                document.getElementById("download").appendChild(button)
-
-
-
-
-
-                // newer promise based version of img.onload
-                // await img.decode()
-                //document.body.append(img)
-
-                // Don't forget to revoke the blob url when
-                // you no longer need it (to release memory)
-                // URL.revokeObjectURL(img.src)
-
-            /*    var asd = btoa(res.body);
-                console.log(asd)
-
-                img.src = "data:image/gif;base64," + asd
-                console.log( img.src)*/
-
-                document.getElementById("img").appendChild(img)
-
-
-                var reader = new FileReader()
-                data = reader.readAsDataURL(new Blob([res]));
-                console.log(data)
-
-
-                /*           {
-                               headers: {
-                                   'Content-Type': 'application/json'
-                                   // 'Content-Type': 'application/x-www-form-urlencoded',
-                               }
-                           }*/
-            })()
-
-        </script>
-
-
-        <!--
-                <a download="custom-filename.jpg" href="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg" title="ImageName">
-                    <img alt="ImageName" src="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg">
-                </a>
-        -->
-
+    <div id="UPLOAD">
         <div class="container">
-            <h1>Multipart File Upload WORKING!</h1>
+            <h3>Upload you photo and generate 3 GIFs, as shown in the examples!</h3>
             <form id="form" enctype="multipart/form-data">
                 <div class="input-group">
                     <label for="files">Select files</label>
@@ -116,72 +32,121 @@
                 <button class="submit-btn" type="submit">Upload</button>
             </form>
         </div>
-        <script src="index.js"></script>
-
-        <script>
-            const fileUploader = document.getElementById('file-uploader');
-
-            fileUploader.addEventListener('change', (event) => {
-                const files = event.target.files;
-                const file = event.target.files[0];
-                console.log('files', files);
+    </div>
 
 
-                // show the upload feedback
-                const size = file.size;
-                const feedback = document.getElementById('feedback');
-                var msg = `File ${files[0].name} uploaded successfully!`;
+    <div id="gif-examples">
+        <div id="img">
+            <div id="download"></div>
+        </div>
+    </div>
 
 
-                if (size > 1024 * 1024) {
-                    msg = `<span style="color:red;">The allowed file size is 1MB. The file you are trying to upload is of ${returnFileSize(size)}</span>`;
-                } else {
-                    msg = `<span style="color:green;"> A ${returnFileSize(size)} file has been uploaded successfully. </span>`;
-                }
 
-                feedback.innerHTML = msg;
+    <script>
+        (async () => {
+            await settingGif("makeGifRapido.gif")
+        })()
 
 
-            });
 
-            function returnFileSize(number) {
-                if (number < 1024) {
-                    return number + 'bytes';
-                } else if (number >= 1024 && number < 1048576) {
-                    return (number / 1024).toFixed(2) + 'KB';
-                } else if (number >= 1048576) {
-                    return (number / 1048576).toFixed(2) + 'MB';
-                }
+
+
+
+        const form = document.getElementById("form");
+        const inputFile = document.getElementById("file");
+        var formData = new FormData();
+
+        const handleSubmit = (event) => {
+            event.preventDefault();
+
+            formData.append("files", inputFile.files[0]);
+
+
+            fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
+                method: "post",
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json)
+                    startShortPollingForGif(json.id)
+                })
+                .catch(
+                    error => ("Something went wrong!", error))
+                .finally(() => {
+                    formData = new FormData();
+                })
+
+        };
+
+        form.addEventListener("submit", handleSubmit)
+    </script>
+</body>
+
+
+<script>
+
+    // newer promise based version of img.onload
+    // await img.decode()
+    //document.body.append(img)
+
+    // Don't forget to revoke the blob url when
+    // you no longer need it (to release memory)
+    // URL.revokeObjectURL(img.src)
+
+    /*    var asd = btoa(res.body);
+        console.log(asd)
+
+        img.src = "data:image/gif;base64," + asd
+        console.log( img.src)
+
+
+
+<!--
+    <div id="results">
+        <div>
+            <h1>Single File Uploadd</h1>
+            <input type="file" id="file-uploader" accept=".jpg, .png">
+            <p>Upload a file and see the output in browser console</p>
+
+            <p id="feedback"></p>
+        </div>
+-->
+
+
+
+    /* const fileUploader = null;
+        fileUploader.addEventListener('change', (event) => {
+            const files = event.target.files;
+            const file = event.target.files[0];
+            console.log('files', files);
+
+            // show the upload feedback
+            const size = file.size;
+            const feedback = document.getElementById('feedback');
+            var msg = `File ${files[0].name} uploaded successfully!`;
+
+            if (size > 1024 * 1024) {
+                msg = `<span style="color:red;">The allowed file size is 1MB. The file you are trying to upload is of ${returnFileSize(size)}</span>`;
+            } else {
+                msg = `<span style="color:green;"> A ${returnFileSize(size)} file has been uploaded successfully. </span>`;
             }
 
+            feedback.innerHTML = msg;
+        });
 
-            const form = document.getElementById("form");
-            const inputFile = document.getElementById("file");
-
-            const formData = new FormData();
-
-            const handleSubmit = (event) => {
-                event.preventDefault();
-
-                for (const file of inputFile.files) {
-                    formData.append("files", file);
-                }
-
-                fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
-                    method: "post",
-                    body: formData,
-                })
-                    .then((response) => console.log(response.json()))
-                    .catch((error) => ("Something went wrong!", error));
-            };
-
-            form.addEventListener("submit", handleSubmit)
-
-        </script>
+        function returnFileSize(number) {
+            if (number < 1024) {
+                return number + 'bytes';
+            } else if (number >= 1024 && number < 1048576) {
+                return (number / 1024).toFixed(2) + 'KB';
+            } else if (number >= 1048576) {
+                return (number / 1048576).toFixed(2) + 'MB';
+            }
+        }*/
 
 
-    </div>
-    <div id>
+</script>
 
-</body>
 </html>
