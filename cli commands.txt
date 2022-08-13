@@ -8,35 +8,70 @@ aws lambda update-function-code --function-name test --zip-file fileb://Lambda-f
 aws s3 cp a.jpg s3://image-processing-app-uploads/ --region "us-east-1"
 
 
+=> sync frontned
+ aws s3 sync . s3://image-processing-frontend
+
+
 
 FRONT END 
 
 UPLOAD
 - Host static website with index.html + some js. Enable CORS?
+	- host index html and check it shows - DONE
+	- reference js and checks a function is called -- DONE
+	- optimize update with CLI commands -- DONE 
 - Create Api gateway project
 - Enable CORS on API gateway
 - Api gateway POST call lambda, url /image/upload
-	- check method is called
-	- Create FORM for uploading FILE
-	- Check lambda receives file
-	- Validate file Size and Image Type
-	- Assing Role for lambda to write to S3 Upload Bucket
-	- Save to S3 with UUUID
-	- Returns UUIID
+	- check method is called - done
+	- Create FORM for uploading FILE - done
+        - ERRORES CORS =>>>>>>>>>>>>>>>>> TODO
+        - LATENCIA UPLOAD =>>>>>>>>>>>>> TODO
+	- Check lambda receives file >>>>>>>> DONE
+	- Save to S3 with UUUID >>>>>>>> DONE
+	- Returns UUIID >>>>>>>> DONE
+	- CORREGIR METADATA ETC  <==================================================TODO
+	- Validate file Size and Image Type <==================================================TODO
+      
 
 GET
 - BUTTON for GET image request
-- APi gateway with GET lambda url /image/get/UUID
-	- check method is called
-	- Role for reading Destination Bucket
-	- Read Image from S3
-	- Return image to user
+- APi gateway with AWS integration for url /image/get/UUID
+	- check method is called ========> done
+	- Role for reading Destination Bucket =>> DONE
+	- Read Image from S3  => DONE
+	- Return image to user => DONE   
+	- Button for being able to download =>> DONE
+	- 
 
 SHORT POLLING
-- js logic After receiving Image Id from UPLOAD Request, initiate short polling to GET
-- Showing Image in front-end.
-- Download button HTML?
-- GIFs visualized in front-end correctly?
+- js logic After receiving Image Id from UPLOAD Request, initiate short polling to GET ==> DONE 
+- Showing Image in front-end. ==> DONE 
+- Download button HTML? ==> DONE
+- GIFs visualized in front-end correctly?  ==> DONE
+
+
+DISEÑO GRAL FRONT END
+
+TITULO
+INFO: que es, diagrama arquitectura, link github <==================================================TODO
+
+UPLOAD YOUR IMAGE
+
+GIF 1
+
+GIF 2
+
+GIF 3 
+
+
+-StartUp: se muestran gifs por defecto  ==> DONE 
+
+-Upload: 
+- los gifs deberían mostrar un "Loading..." <==================================================TODO
+- comienza un short polling hacia la URL del bucket fileupload ===== DONE 
+
+
 
 
 
@@ -48,6 +83,37 @@ IMAGE PROCESSING
 - Lambda reading Image from bucket and saving it to another - done
 - Image processing Logic - TODO
 - Converting to GIF
+- Move initialization LOGIC OUTSIDE!!!!
+
+
+
+BIG FIXES
+- SOLUCIOANR CORS ON ERROR
+- QUE LA API GATEWAY DEVUELVA 404...NO 500
+- FIJARSE SI EL LOG TIRA MAL EL SDK CLIENT
+- VER IS Y OS , Y SIZE, EN LAMBDAS
+- QUE EL SHORT POLLING SOLO SEA EN 404, X CIERTO TIEMPO, Y DESPUES PARE. 
+
+
+
 
 
 API GATEWAY <=> LAMBDA => LAMBDA * 1 => S3 => 
+
+
+
+https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-destination/resized-1f109e40-d81e-4300-9b90-73270f425573
+
+https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=s3.amazonaws.com/image-processing-app-destination/resized-1f109e40-d81e-4300-9b90-73270f425573
+
+
+https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-destination/22e811f9-23a6-42a1-8c1d-2aaaca64479a.jpg
+
+
+
+https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg
+
+
+
+ ht
+

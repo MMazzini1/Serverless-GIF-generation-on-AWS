@@ -43,4 +43,15 @@ public class ImageUtils {
         return "";
     }
 
+    public String getFileTypeFromMimeType(String mimeType){
+        if (JPG_MIME.equals(mimeType)) {
+            return JPG_TYPE;
+        }
+        if (PNG_MIME.equals(mimeType)) {
+            return PNG_TYPE;
+        }
+        return "";
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package lambda.handler;
 
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
@@ -16,31 +17,36 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.MultipartStream;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 
 public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 
     private static final Logger logger = LoggerFactory.getLogger(UploadPicture.class);
-    public static final String UPLOAD_IMAGE = "image-processing-app-uploads";
+    public static final String UPLOAD_BUCKET_NAME = "image-processing-app-uploads";
     private ImageUtils imageUtils;
     private Gson gson;
-    private AmazonS3 s3Client;
+    private S3Client s3Client;
 
 
     public UploadPicture() {
         this.imageUtils = new ImageUtils();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
-        s3Client = AmazonS3ClientBuilder.defaultClient();
+        Region region = Region.US_EAST_1;
+        s3Client = S3Client.builder()
+                .region(region)
+                .build();
+
     }
 
     @Override
@@ -62,7 +68,7 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
         //Change these values to fit your region and bucket name
         //Every file will be named image.jpg in this example. 
         //You will want to do something different here in production 
-        String objectKey = UUID.randomUUID().toString();
+
 
         try {
             //Get the uploaded file and decode from base64 
@@ -73,6 +79,7 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
 
             if (hps != null) {
                 contentType = hps.get("content-type");
+                logger.info("Content type: " + contentType);
             }
 
             //Extract the boundary
@@ -82,7 +89,7 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
             byte[] boundary = boundaryArray[1].getBytes();
 
             //Log the extraction for verification purposes 
-            logger.info(new String(bI, "UTF-8") + "\n");
+
 
             //Create a ByteArrayInputStream 
             ByteArrayOutputStream out = readMultiPart(bI, boundary);
@@ -94,14 +101,25 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
             InputStream fis = new ByteArrayInputStream(out.toByteArray());
 
 
-            //Configure the file metadata
-            ObjectMetadata metadata = new ObjectMetadata();
-            //metadata.setContentLength(out.toByteArray().length);
-            //metadata.setContentType(imageUtils.getMimeType(imageUtils.determineImageType()));
-            // metadata.setCacheControl("public, max-age=31536000");
 
-            //Put file into S3 
-            s3Client.putObject(UPLOAD_IMAGE, objectKey, fis, metadata);
+            String mimeType = URLConnection.guessContentTypeFromStream(fis);
+            logger.info("File ctt type: " + mimeType);
+
+
+            //Put file into S3
+
+
+
+            String objectKey = UUID.randomUUID() + "." + imageUtils.getFileTypeFromMimeType(mimeType);
+
+            PutObjectRequest objectRequest = PutObjectRequest.builder()
+                    .bucket(UPLOAD_BUCKET_NAME)
+                    .key(objectKey)
+                    .build();
+
+            s3Client.putObject(objectRequest, RequestBody.fromBytes(out.toByteArray()));
+
+
 
             //Log status 
             logger.info("Object saved in S3");
@@ -123,7 +141,7 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
         }
 
 
-        logger.info(response.toString());
+        //logger.info(response.toString());
         return response;
     }
 
@@ -132,6 +150,7 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
 
         //Create a MultipartStream to process the form-data
         MultipartStream multipartStream = new MultipartStream(content, boundary, bI.length, null);
+
 
         //Create a ByteArrayOutputStream
         ByteArrayOutputStream out = new ByteArrayOutputStream();

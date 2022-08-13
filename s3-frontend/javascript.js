@@ -1,10 +1,7 @@
-
-const  GET_GIF_URL = "https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/"
-
+const GET_GIF_URL = "https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-destination/"
 
 
-
-async function settingGif(id){
+async function settingGif(id) {
     const res = await fetchGif(id)
     console.log(res)
     const blob = await res.blob()
@@ -21,7 +18,7 @@ async function settingGif(id){
     document.getElementById("img").prepend(img)
 }
 
-async function replacingGif(id){
+async function replacingGif(id) {
     const res = await fetchGif(id)
     console.log(res)
     const blob = await res.blob()
@@ -41,28 +38,33 @@ async function replacingGif(id){
 
 
 function startShortPollingForGif(id) {
-    console.log("Initializing short polling for " +  id)
+    console.log("Initializing short polling for " + id)
     const interval = setInterval(function () {
         console.log("fetching")
         fetchGif(id)
             .then(response => {
-                console.log("Stopping short polling")
+                console.log("Stopping short polling, response => ")
+                console.log(response)
                 replacingGif(id)
                 clearInterval(interval)
             })
-            .catch(error => console.log("Error getting GIF"))
+            .catch(
+                error => {
+                    console.log("Error getting GIF ->")
+                    console.log(error)
+                }
+            )
+
     }, 2000);
 }
-
 
 
 function fetchGif(id) {
     return fetch(GET_GIF_URL + id,
         {headers: {'accept': ' image/gif'}})
-        .catch(error => console.log("ERROR getting S3 GIF " + error))
 }
 
-function createDownloadButton(blob){
+function createDownloadButton(blob) {
     let a = document.createElement('a');
     a.download = 'myGif';
     a.href = window.URL.createObjectURL(blob);

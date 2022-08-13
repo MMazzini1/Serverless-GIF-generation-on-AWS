@@ -1,1 +1,5 @@
-C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\Handler.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\handler\Handler.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\handler\UploadPicture.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageProcessing.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\S3.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageUtils.java
