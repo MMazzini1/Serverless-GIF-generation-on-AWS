@@ -1,4 +1,10 @@
-lambda\handler\CreateBlurGif.class
 lambda\handler\UploadPicture.class
+lambda\imageprocessing\ImageProcessingUtils.class
+lambda\imageprocessing\gif\impl\GifWriterImpl.class
+lambda\handler\CreateBlurGif.class
+lambda\imageprocessing\gif\impl\GifSequenceWriter.class
+lambda\imageprocessing\ImageTypeUtils.class
 lambda\imageprocessing\S3.class
-lambda\imageprocessing\ImageUtils.class
+lambda\imageprocessing\gif\GifWriter.class
+lambda\imageprocessing\ImagePortion.class
+lambda\imageprocessing\BlurGifGenerator.class
