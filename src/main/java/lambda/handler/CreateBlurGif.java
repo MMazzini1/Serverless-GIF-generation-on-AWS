@@ -77,7 +77,7 @@ public class CreateBlurGif implements RequestHandler<S3Event, String> {
                 " key:" + srcKey +
                 " Img type: " + imageType +
                 " Mime type: " + mimeType);
-        
+
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(srcBucket)
