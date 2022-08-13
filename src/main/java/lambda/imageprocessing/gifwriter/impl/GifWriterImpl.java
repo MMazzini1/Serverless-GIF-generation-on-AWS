@@ -1,6 +1,6 @@
-package lambda.imageprocessing.gif.impl;
+package lambda.imageprocessing.gifwriter.impl;
 
-import lambda.imageprocessing.gif.GifWriter;
+import lambda.imageprocessing.gifwriter.GifWriter;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;

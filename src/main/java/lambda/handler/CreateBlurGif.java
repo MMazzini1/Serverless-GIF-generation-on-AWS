@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 
 import com.amazonaws.AmazonServiceException;
@@ -17,6 +19,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification.S3EventNotificationRecord;
+import lambda.imageprocessing.gifgeneration.BlurGifGenerator;
+import lambda.imageprocessing.gifgeneration.GifGenerator;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
@@ -38,10 +42,9 @@ public class CreateBlurGif implements RequestHandler<S3Event, String> {
 
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final Logger logger = LoggerFactory.getLogger(CreateBlurGif.class);
-    private static final float MAX_WIDTH = 2000;
-    private static final float MAX_HEIGHT = 2000;
     private ImageTypeUtils imageUtils;
     private S3Client s3Client;
+    private GifGenerator blurGifGenerator;
 
 
     public CreateBlurGif() {
@@ -50,6 +53,7 @@ public class CreateBlurGif implements RequestHandler<S3Event, String> {
         s3Client = S3Client.builder()
                 .region(region)
                 .build();
+        blurGifGenerator = new BlurGifGenerator();
 
     }
 
@@ -86,6 +90,7 @@ public class CreateBlurGif implements RequestHandler<S3Event, String> {
 
 
         try {
+
             BufferedImage srcImage = ImageIO.read(response);
             try {
                 String dstBucket = PROCESSED_IMAGES_BUCKET;
@@ -93,25 +98,16 @@ public class CreateBlurGif implements RequestHandler<S3Event, String> {
 
 
 
+                ByteArrayOutputStream gif = blurGifGenerator.generateGif(srcImage);
 
-                RenderedImage resizedImage = null;
-
-
-
-
-                // Re-encode image to target format
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                ImageIO.write(resizedImage, imageType, os);
-                InputStream is = new ByteArrayInputStream(os.toByteArray());
-                // Set Content-Length and Content-Type
 
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(dstBucket)
-                        .contentType(mimeType)
+                        .contentType("image/gif")
                         .key(dstKey)
                         .build();
 
-                s3Client.putObject(objectRequest, RequestBody.fromInputStream(is, os.size()));
+                s3Client.putObject(objectRequest,RequestBody.fromBytes(gif.toByteArray()));
 
 
             } catch (AmazonServiceException e) {

@@ -61,7 +61,7 @@ public class ImageProcessingUtils {
 
 
     /**  sets color to image */
-    private void setColor(BufferedImage bufferedImage, Color color) {
+    public void setColor(BufferedImage bufferedImage, Color color) {
         for (int i = 0; i < bufferedImage.getWidth(); i++) {
             for (int j = 0; j < bufferedImage.getHeight(); j++) {
                 bufferedImage.setRGB(i, j, color.getRGB());
@@ -71,11 +71,11 @@ public class ImageProcessingUtils {
 
 
     /** Joins multiple fragments of an image in one single image */
-    public BufferedImage joinImagePortions(List<ImagePortion> imagesToJoin, Integer width, Integer height) {
+    public BufferedImage joinImageFragments(List<ImageFragment> imagesToJoin, Integer width, Integer height) {
         BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D g2 = newImage.createGraphics();
         g2.fillRect(0, 0, width, height);
-        for (ImagePortion img : imagesToJoin) {
+        for (ImageFragment img : imagesToJoin) {
             g2.drawImage(img.imageSegment, null, img.upperLeftCornerXCoordinate, img.upperLeftCornerYCoordinate);
         }
         g2.dispose();

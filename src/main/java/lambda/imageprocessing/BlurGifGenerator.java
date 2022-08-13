@@ -1,2 +1,9 @@
-package lambda.imageprocessing;public class BlurGifGenerator {
+package lambda.imageprocessing;
+
+public class BlurGifGenerator {
+
+
+
+
+
 }

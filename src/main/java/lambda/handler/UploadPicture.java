@@ -1,5 +1,6 @@
 package lambda.handler;
 
+import java.awt.image.BufferedImage;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lambda.imageprocessing.ImageProcessingUtils;
 import lambda.imageprocessing.ImageTypeUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.MultipartStream;
@@ -28,17 +30,23 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import javax.imageio.ImageIO;
+
 
 public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadPicture.class);
     public static final String UPLOAD_BUCKET_NAME = "image-processing-app-uploads";
-    private ImageTypeUtils imageUtils;
+    private ImageTypeUtils imageTypeUtils;
+    private ImageProcessingUtils imageProcessingUtils;
     private Gson gson;
     private S3Client s3Client;
 
+    private static final int MAX_WIDTH = 300;
+    private static final int MAX_HEIGHT = 300;
+
     public UploadPicture() {
-        this.imageUtils = new ImageTypeUtils();
+        this.imageTypeUtils = new ImageTypeUtils();
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         Region region = Region.US_EAST_1;
         s3Client = S3Client.builder()
@@ -51,16 +59,24 @@ public class UploadPicture implements RequestHandler<APIGatewayProxyRequestEvent
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         try {
 
+            //read multipart, determine image mime type
             ByteArrayOutputStream out = multipartProcess(event);
-            //Prepare an InputStream from the ByteArrayOutputStream      
-            InputStream fis = new ByteArrayInputStream(out.toByteArray());
-
-            String mimeType = URLConnection.guessContentTypeFromStream(fis);
-            String fileType = imageUtils.getFileTypeFromMimeType(mimeType);
+            InputStream is = new ByteArrayInputStream(out.toByteArray());
+            String mimeType = URLConnection.guessContentTypeFromStream(is);
+            String imageType = imageTypeUtils.getFileTypeFromMimeType(mimeType);
             logger.info("File mime type: " + mimeType);
 
-            String objectKey = UUID.randomUUID() + "." + fileType;
-            uploadToS3(out, mimeType, objectKey);
+
+            //resize image
+            BufferedImage srcImage = ImageIO.read(is);
+            BufferedImage resizedImage = imageProcessingUtils.resize(srcImage, MAX_WIDTH, MAX_HEIGHT);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(resizedImage, imageType, os);
+
+
+            //upload to s3
+            String objectKey = UUID.randomUUID() + "." + imageType;
+            uploadToS3(os, mimeType, objectKey);
 
             logger.info("Object saved in S3");
             buildResponse(response, objectKey);

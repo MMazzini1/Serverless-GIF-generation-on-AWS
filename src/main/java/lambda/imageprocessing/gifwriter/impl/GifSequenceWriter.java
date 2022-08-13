@@ -1,4 +1,4 @@
-package lambda.imageprocessing.gif.impl;
+package lambda.imageprocessing.gifwriter.impl;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
@@ -162,7 +162,7 @@ public class GifSequenceWriter {
 
      */
 
-    public static void main(String[] args) throws Exception {
+    public void main(String[] args) throws Exception {
         if (args.length > 1) {
             // grab the output image type from the first image in the sequence
             BufferedImage firstImage = ImageIO.read(new File(args[0]));

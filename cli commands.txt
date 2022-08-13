@@ -12,7 +12,13 @@ aws s3 cp a.jpg s3://image-processing-app-uploads/ --region "us-east-1"
 
 
 
-FRONT END 
+- UPLOAD RESIZES / COMPRESSES IMAGE 
+
+
+=> GIF GENERATION
+
+
+
 
 UPLOAD
 - Host static website with index.html + some js. Enable CORS?
@@ -29,8 +35,7 @@ UPLOAD
 	- Check lambda receives file >>>>>>>> DONE
 	- Save to S3 with UUUID >>>>>>>> DONE
 	- Returns UUIID >>>>>>>> DONE
-	- CORREGIR METADATA ETC  <==================================================TODO
-	- Validate file Size and Image Type <==================================================TODO
+	- CORREGIR METADATA ETC >>>>>>>> DONE
       
 
 GET
@@ -41,7 +46,7 @@ GET
 	- Read Image from S3  => DONE
 	- Return image to user => DONE   
 	- Button for being able to download =>> DONE
-	- 
+	
 
 SHORT POLLING
 - js logic After receiving Image Id from UPLOAD Request, initiate short polling to GET ==> DONE 
@@ -82,27 +87,27 @@ IMAGE PROCESSING
 - Lambda reading Image from bucket and saving it to another - done
 - Image processing Logic - TODO
 - Converting to GIF
-- Move initialization LOGIC OUTSIDE!!!!
+
 
 
 
 BIG FIXES
 - SOLUCIOANR CORS ON ERROR ===> DONE
 - QUE LA API GATEWAY DEVUELVA 404...NO 500  ===> DONE 
-- FIJARSE SI EL LOG TIRA MAL EL SDK CLIENT
-- VER IS Y OS , Y SIZE, EN LAMBDAS 
+- FIJARSE SI EL LOG TIRA MAL EL SDK CLIENT     <==================================================TODO
+- VER IS Y OS , Y SIZE, EN LAMBDAS     <==================================================TODO
 - QUE EL SHORT POLLING SOLO SEA EN 404, X CIERTO TIEMPO, Y DESPUES PARE.   ===> DONE
 
--FIX LOGGING
--FIX XRAY
+-FIX LOGGING    <==================================================TODO
+-FIX XRAY   <==================================================TODO
 
 
-- MODAL CARGANDO DURANTE EL UPLOAD
-- MODARL PROCESAMIENTO 
-- VALIDACION LIMITE 6MB LAMBDA  === > 
+- MODAL CARGANDO DURANTE EL UPLOAD   <==================================================TODO
+- MODARL PROCESAMIENTO     <==================================================TODO
+- VALIDACION LIMITE MAS FILE TYPE 3MB LAMBDA  <==================================================TODO
 - FIX CORS 413....SI VALIDO NO HACE FALTA
 
-
+-BUG javax.imageio.IIOException: Error reading PNG image data  Unexpected end of ZLIB input stream <==
 
 API GATEWAY <=> LAMBDA => LAMBDA * 1 => S3 => 
 
@@ -120,6 +125,14 @@ https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-proces
 https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg
 
 
+-----------------
 
- ht
+
+FANOUT
+
+
+
+
+
+
 
