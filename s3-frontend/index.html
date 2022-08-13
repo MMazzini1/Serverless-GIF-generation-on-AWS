@@ -36,16 +36,37 @@
 
 
     <div id="gif-examples">
-        <div id="img">
-            <div id="download"></div>
+        <div >
+            <img id="GifImg" width="600">
+            <div >
+                <button id="Button">Download gif</button>
+            </div>
+        </div>
+
+        <div >
+            <img id="GifImg2" width="600">
+            <div >
+                <button id="Button2">Download gif</button>
+            </div>
+        </div>
+
+        <div >
+            <img id="GifImg3" width="600">
+            <div >
+                <button id="Button3">Download gif</button>
+            </div>
         </div>
     </div>
 
 
 
+
+
     <script>
         (async () => {
-            await settingGif("makeGifRapido.gif")
+            await settingGif("makeGifRapido.gif", "Button", "GifImg")
+            await settingGif("makeGifRapido.gif", "Button2", "GifImg2")
+            await settingGif("makeGifRapido.gif", "Button3", "GifImg3")
         })()
 
 
