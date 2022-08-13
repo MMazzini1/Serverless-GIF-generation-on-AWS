@@ -27,14 +27,14 @@ import org.slf4j.LoggerFactory;
 
 // Handler value: example.Handler
 public class Handler implements RequestHandler<S3Event, String> {
+    public static final String PROCESSED_IMAGES_BUCKET = "image-processing-app-destination";
+
+
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private static final float MAX_WIDTH = 100;
     private static final float MAX_HEIGHT = 100;
-    private final String JPG_TYPE = (String) "jpg";
-    private final String JPG_MIME = (String) "image/jpeg";
-    private final String PNG_TYPE = (String) "png";
-    private final String PNG_MIME = (String) "image/png";
+
 
     @Override
     public String handleRequest(S3Event s3event, Context context) {
@@ -68,7 +68,7 @@ public class Handler implements RequestHandler<S3Event, String> {
         try {
             BufferedImage srcImage = ImageIO.read(objectData);
             try {
-                String dstBucket = "image-processing-app-destination";
+                String dstBucket = PROCESSED_IMAGES_BUCKET;
                 String dstKey = "resized-" + srcKey;
                 s3Client.putObject(dstBucket, dstKey, objectData, new ObjectMetadata());
             } catch (AmazonServiceException e) {

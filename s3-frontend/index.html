@@ -12,50 +12,106 @@
 
         <div>
             <h1>Single File Uploadd</h1>
-            <input type="file" id="file-uploader"  accept=".jpg, .png">
+            <input type="file" id="file-uploader" accept=".jpg, .png">
             <p>Upload a file and see the output in browser console</p>
 
             <p id="feedback"></p>
         </div>
 
 
+        <div id="img">
+            <div id="download">    DOWNLAODDDD   </div>
+            <p>IMAGE BELOW!</p>
+        </div>
 
-        <p>IMG</p>
-        <img src="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg" alt="Girl in a jacket" width="500" height="600">
 
 
         <script>
             (async () => {
-                const res = await fetch('https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg')
+                // epidoto2.jpg
+                //   WORKING URL ==>       https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/makeGifRapido.gif
+                const res = await fetch('https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/makeGifRapido.gif',
+                    {
+                        headers: {
+                            'accept': ' image/gif'
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        }
+
+                    })
                 const blob = await res.blob()
+                console.log(res)
+                console.log(blob)
                 const img = new Image()
                 img.src = URL.createObjectURL(blob)
 
-                // newer promise based version of img.onload
-                await img.decode()
 
-                document.body.append(img)
+                let a = document.createElement('a');
+                // get image as blob
+                // use download attribute https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#Attributes
+                a.download = 'myGif';
+                a.href = window.URL.createObjectURL(blob);
+                //store download url in javascript https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes#JavaScript_access
+                a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
+
+                //click on element to start download
+
+                let button = document.createElement('button');
+                button.innerText = "DOWNLOADD GIF"
+
+                button.addEventListener("click", function () {
+                    a.click()
+                })
+                document.getElementById("download").appendChild(button)
+
+
+
+
+
+                // newer promise based version of img.onload
+                // await img.decode()
+                //document.body.append(img)
 
                 // Don't forget to revoke the blob url when
                 // you no longer need it (to release memory)
-                URL.revokeObjectURL(img.src)
+                // URL.revokeObjectURL(img.src)
+
+            /*    var asd = btoa(res.body);
+                console.log(asd)
+
+                img.src = "data:image/gif;base64," + asd
+                console.log( img.src)*/
+
+                document.getElementById("img").appendChild(img)
+
+
+                var reader = new FileReader()
+                data = reader.readAsDataURL(new Blob([res]));
+                console.log(data)
+
+
+                /*           {
+                               headers: {
+                                   'Content-Type': 'application/json'
+                                   // 'Content-Type': 'application/x-www-form-urlencoded',
+                               }
+                           }*/
             })()
 
         </script>
 
 
-<!--
-        <a download="custom-filename.jpg" href="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg" title="ImageName">
-            <img alt="ImageName" src="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg">
-        </a>
--->
+        <!--
+                <a download="custom-filename.jpg" href="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg" title="ImageName">
+                    <img alt="ImageName" src="https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-uploads/image.jpg">
+                </a>
+        -->
 
         <div class="container">
             <h1>Multipart File Upload WORKING!</h1>
             <form id="form" enctype="multipart/form-data">
                 <div class="input-group">
                     <label for="files">Select files</label>
-                    <input id="file" type="file" multiple />
+                    <input id="file" type="file" multiple/>
                 </div>
                 <button class="submit-btn" type="submit">Upload</button>
             </form>
@@ -69,8 +125,6 @@
                 const files = event.target.files;
                 const file = event.target.files[0];
                 console.log('files', files);
-
-
 
 
                 // show the upload feedback
@@ -88,7 +142,6 @@
                 feedback.innerHTML = msg;
 
 
-
             });
 
             function returnFileSize(number) {
@@ -100,8 +153,6 @@
                     return (number / 1048576).toFixed(2) + 'MB';
                 }
             }
-
-
 
 
             const form = document.getElementById("form");

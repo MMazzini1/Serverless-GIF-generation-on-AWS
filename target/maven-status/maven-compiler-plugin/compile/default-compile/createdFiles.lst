@@ -1,1 +1,4 @@
+lambda\handler\UploadPicture.class
+lambda\imageprocessing\S3.class
+lambda\imageprocessing\ImageUtils.class
 lambda\handler\Handler.class
