@@ -9,5 +9,6 @@ lambda\imageprocessing\gifgeneration\GifGenerator.class
 lambda\imageprocessing\gifwriter\GifWriter.class
 lambda\imageprocessing\ImageFragment.class
 lambda\handler\GIFGenerationLambdaHandler.class
+lambda\handler\CreateRecursiveGif.class
 lambda\imageprocessing\gifwriter\impl\GifWriterImpl.class
 lambda\imageprocessing\gifwriter\impl\GifSequenceWriter.class

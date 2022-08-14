@@ -47,7 +47,7 @@ function startShortPollingForGif(id) {
 
     const interval2 = setInterval(function () {
         console.log("fetching")
-        startShortPollingFor("resized-" + id, interval2, "Button2", "GifImg2");
+        startShortPollingFor("resized2-" + id, interval2, "Button2", "GifImg2");
     }, 2000);
 
     const interval3 = setInterval(function () {
