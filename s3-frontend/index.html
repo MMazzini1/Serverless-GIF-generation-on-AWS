@@ -32,11 +32,11 @@
 
     </div>
 
-    <div id="UPLOAD" style ="margin-top:50px">
+    <div id="UPLOAD" style="margin-top:50px">
         <div class="intro">
             <h3>Upload an image and click on GENERATE GIFS</h3>
 
-            <p > Picture must be
+            <p> Picture must be
                 <span style="color: #ff0000">        jpeg/png</span>
                 and under
                 <span style="color: #ff0000">     3 MB.</span>
@@ -45,45 +45,41 @@
                 Examples are shown below. </p>
 
             <form id="form" enctype="multipart/form-data">
-                <div class="input-group" >
+                <div class="input-group">
 
 
-                    <labelfor="file-upload" class="custom-file-upload">
-                        <i class="fa fa-cloud-upload"></i>
+                    <labelfor
+                    ="file-upload" class="custom-file-upload">
+                    <i class="fa fa-cloud-upload"></i>
                     </label>
-                    <input  id ="file"  id="file-upload" type="file"/>
+                    <input id="file" type="file"/>
+                    <p id="feedback"></p>
                 </div>
 
 
-
-                <button class="submit-btn" type="submit">GENERATE GIFS</button>
+                <button id = "generatebtn" class="submit-btn" type="submit" disabled="true">GENERATE GIFS</button>
             </form>
         </div>
     </div>
 
 
-
-
     <div id="gif-examples" class="container">
         <div id="resized-">
             <img src="gifgenerationblur.gif" class="gif-img">
-            <!--   <a href="gifgenerationblur.gif" class ="buttonstyle" download>
-                   Download
-               </a>-->
             <div>
                 <button id="Button">Download</button>
             </div>
         </div>
 
         <div id="resized2-">
-            <img  src="templegifgenerationcyclic.gif" class="gif-img">
+            <img src="templegifgenerationcyclic.gif" class="gif-img">
             <div>
                 <button id="Button2">Download</button>
             </div>
         </div>
 
         <div id="resized3-">
-            <img  src="officegifgenerationrecursive.gif" class="gif-img">
+            <img src="officegifgenerationrecursive.gif" class="gif-img">
             <div>
                 <button id="Button3">Download</button>
             </div>
@@ -100,7 +96,87 @@
         const form = document.getElementById("form");
         const inputFile = document.getElementById("file");
         var formData = new FormData();
+
+
+        function returnFileSize(number) {
+            if(number < 1024) {
+                return number + 'bytes';
+            } else if(number >= 1024 && number < 1048576) {
+                return (number/1024).toFixed(2) + 'KB';
+            } else if(number >= 1048576) {
+                return (number/1048576).toFixed(2) + 'MB';
+            }
+        }
+
+
+        inputFile.addEventListener('change', (event) => {
+            const files = event.target.files;
+            console.log('files', files);
+
+            for (const file of files) {
+                const name = file.name;
+                const type = file.type ? file.type : 'NA';
+                const size = file.size;
+                const lastModified = file.lastModified;
+                console.log({file, name, type, size, lastModified});
+
+                const feedback = document.getElementById('feedback');
+          /*      var msg = ` File Name: ${name} <br/>
+              File Size: ${size} <br/>
+              File type: ${type} <br/>
+              File Last Modified: ${new Date(lastModified)}`;*/
+
+                if (size > 3 * 1024 * 1024) {
+                    msg = `The allowed file size is 3MB. The file you are trying to upload is of ${returnFileSize(size)}`;
+                    feedback.innerText = msg
+                } else {
+                    // msg = `<span style="color:green;"> A ${returnFileSize(size)} file has been uploaded successfully. </span>`;
+                    var button = document.getElementById('generatebtn');
+                    button.disabled = false;
+                    // feedback.innerText = "File is being uploaded"
+                }
+
+
+
+
+            }
+        });
+
+
+        const handleSubmit = (event) => {
+            event.preventDefault();
+
+
+            formData = new FormData();
+            let file = inputFile.files[0];
+            formData.append("files", file);
+            console.log("input file: " + file)
+
+
+
+            console.log('files size',   file.size);
+
+            fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
+                method: "post",
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json)
+                    startShortPollingForGif(json.id)
+                })
+                .catch(
+                    error => ("Something went wrong!", error))
+                .finally(() => {
+                    formData = new FormData();
+                })
+
+        };
+
+
         form.addEventListener("submit", handleSubmit)
+
+
     </script>
 </body>
 

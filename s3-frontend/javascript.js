@@ -91,27 +91,3 @@ function fetchGif(id) {
 }
 
 
-const handleSubmit = (event) => {
-    event.preventDefault();
-
-    formData = new FormData();
-    formData.append("files", inputFile.files[0]);
-    console.log("input file: " + inputFile.files[0])
-
-
-    fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
-        method: "post",
-        body: formData,
-    })
-        .then(response => response.json())
-        .then(json => {
-            console.log(json)
-            startShortPollingForGif(json.id)
-        })
-        .catch(
-            error => ("Something went wrong!", error))
-        .finally(() => {
-            formData = new FormData();
-        })
-
-};
