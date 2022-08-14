@@ -90,20 +90,28 @@ function fetchGif(id) {
     return fetch(GET_GIF_URL + id)
 }
 
-function setDownloadButton(blob, buttonId, url) {
-    let a = document.createElement('a');
-    a.download = 'myGif';
-    a.href = url
-    a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
 
-    let button = document.getElementById(buttonId)
-    button.innerText = "Download gif"
+const handleSubmit = (event) => {
+    event.preventDefault();
 
-    button.addEventListener("click", function () {
-        a.click()
+    formData = new FormData();
+    formData.append("files", inputFile.files[0]);
+    console.log("input file: " + inputFile.files[0])
+
+
+    fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
+        method: "post",
+        body: formData,
     })
+        .then(response => response.json())
+        .then(json => {
+            console.log(json)
+            startShortPollingForGif(json.id)
+        })
+        .catch(
+            error => ("Something went wrong!", error))
+        .finally(() => {
+            formData = new FormData();
+        })
 
-    return button
-
-}
-
+};

@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+<html lang="en">
 <html>
 <head>
     <title>Image Processing App</title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/gifpanel.css">
+    <link rel="stylesheet" type="text/css" href="css/fileupload.css">
     <script type="text/javascript" src="javascript.js"></script>
 </head>
 <body>
@@ -23,120 +26,63 @@
 
     <div id="UPLOAD">
         <div class="intro">
-            <h3>Upload you photo and generate 3 GIFs, as shown in the examples!</h3>
+            <h3>Upload a photo and generate the three GIFs types shown below!</h3>
             <form id="form" enctype="multipart/form-data">
-                <div class="input-group">
-                    <label for="files">Select files</label>
-                    <input id="file" type="file" multiple/>
+                <div class="input-group" >
+
+
+                    <labelfor="file-upload" class="custom-file-upload">
+                        <i class="fa fa-cloud-upload"></i>
+                    </label>
+                    <input  id ="file"  id="file-upload" type="file"/>
                 </div>
+
+
+
                 <button class="submit-btn" type="submit">Upload</button>
             </form>
         </div>
     </div>
 
-    <style>
-        .container {
-            display: flex;
-            padding-top: 30px;
-        }
-        .container > div {
-            flex: 1; /*grow*/
-        }
 
-        .gif-img {
-            width: 300px
-        }
-
-
-        .buttonstyle {
-
-            width: 115px;
-            height: 25px;
-            background: #0747ff;
-            padding: 10px;
-            text-align: center;
-            border-radius: 5px;
-            color: rgb(255, 255, 255);
-            font-weight: bold;
-            line-height: 25px;
-        }
-    </style>
 
 
     <div id="gif-examples" class="container">
-        <div id ="resized-">
-            <img id="GifImg" src="gifgenerationblur.gif"  class="gif-img" >
-         <!--   <a href="gifgenerationblur.gif" class ="buttonstyle" download>
-                Download
-            </a>-->
-            <div >
-                <button id="Button" >Download gif</button>
+        <div id="resized-">
+            <img src="gifgenerationblur.gif" class="gif-img">
+            <!--   <a href="gifgenerationblur.gif" class ="buttonstyle" download>
+                   Download
+               </a>-->
+            <div>
+                <button id="Button">Download gif</button>
             </div>
         </div>
 
-        <div  id ="resized2-">
-            <img id="GifImg2" src="templegifgenerationcyclic.gif"  class="gif-img" >
-            <div >
+        <div id="resized2-">
+            <img  src="templegifgenerationcyclic.gif" class="gif-img">
+            <div>
                 <button id="Button2">Download gif</button>
             </div>
         </div>
 
-        <div  id ="resized3-" >
-            <img id="GifImg3" src="officegifgenerationrecursive.gif"  class="gif-img" >
-            <div >
+        <div id="resized3-">
+            <img  src="officegifgenerationrecursive.gif" class="gif-img">
+            <div>
                 <button id="Button3">Download gif</button>
             </div>
         </div>
     </div>
 
 
-
-
-
     <script>
-        (async () => {
-            updateDownloadButtonOnStartUp("resized-", "gifgenerationblur.gif")
-            updateDownloadButtonOnStartUp("resized2-", "templegifgenerationcyclic.gif")
-            updateDownloadButtonOnStartUp("resized3-", "officegifgenerationrecursive.gif")
-            // await settingGif("makeGifRapido.gif", "Button", "GifImg")
-            //await settingGif("makeGifRapido.gif", "Button2", "GifImg2")
-            // await settingGif("makeGifRapido.gif", "Button3", "GifImg3")
-        })()
-
-
-
-
+        updateDownloadButtonOnStartUp("resized-", "gifgenerationblur.gif")
+        updateDownloadButtonOnStartUp("resized2-", "templegifgenerationcyclic.gif")
+        updateDownloadButtonOnStartUp("resized3-", "officegifgenerationrecursive.gif")
 
 
         const form = document.getElementById("form");
         const inputFile = document.getElementById("file");
         var formData = new FormData();
-
-        const handleSubmit = (event) => {
-            event.preventDefault();
-
-            formData = new FormData();
-            formData.append("files", inputFile.files[0]);
-            console.log("input file: " + inputFile.files[0])
-
-
-            fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
-                method: "post",
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(json => {
-                    console.log(json)
-                    startShortPollingForGif(json.id)
-                })
-                .catch(
-                    error => ("Something went wrong!", error))
-                .finally(() => {
-                    formData = new FormData();
-                })
-
-        };
-
         form.addEventListener("submit", handleSubmit)
     </script>
 </body>

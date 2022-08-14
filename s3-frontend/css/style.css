@@ -1,0 +1,32 @@
+body {
+  background: #e6f3ff;
+  padding: 20px;
+  font-family: Helvetica;
+}
+
+#layout {
+  background: rgba(74, 210, 241, 0);
+  border-radius: 4px;
+  padding: 20px 20px 50px;
+  font-size: 25px;
+  text-align: center;
+  transition: all 0.2s;
+  margin: 0 auto;
+  width: 950px;
+}
+
+button {
+  background: #0084ff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 15px;
+  color: #fff;
+}
+
+button:hover {
+  background-color: #f80a0a;
+  cursor: pointer;
+}
+
+
