@@ -93,7 +93,7 @@
                 .then(response => response.json())
                 .then(json => {
                     console.log(json)
-                    startShortPollingForGif("resized-" + json.id)
+                    startShortPollingForGif(json.id)
                 })
                 .catch(
                     error => ("Something went wrong!", error))

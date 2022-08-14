@@ -1,5 +1,11 @@
-C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\handler\Handler.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\gifwriter\impl\GifWriterImpl.java
 C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\handler\UploadPicture.java
-C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageProcessing.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\handler\CreateBlurGif.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageFragment.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageTypeUtils.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\gifgeneration\BlurGifGenerator.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\gifwriter\impl\GifSequenceWriter.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\gifwriter\GifWriter.java
 C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\S3.java
-C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageUtils.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\gifgeneration\GifGenerator.java
+C:\Users\Martin\Desktop\Proyectos\Lambda-functions\src\main\java\lambda\imageprocessing\ImageProcessingUtils.java

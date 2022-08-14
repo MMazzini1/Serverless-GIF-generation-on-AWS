@@ -39,20 +39,20 @@ function startShortPollingFor(id, interval, buttonId, imgId) {
 
 function startShortPollingForGif(id) {
     console.log("Initializing short polling for " + id)
-    
+
     const interval = setInterval(function () {
         console.log("fetching")
-        startShortPollingFor(id, interval, "Button", "GifImg");
+        startShortPollingFor("resized-" + id, interval, "Button", "GifImg");
     }, 2000);
 
     const interval2 = setInterval(function () {
         console.log("fetching")
-        startShortPollingFor(id, interval2, "Button2", "GifImg2");
+        startShortPollingFor("resized-" + id, interval2, "Button2", "GifImg2");
     }, 2000);
 
     const interval3 = setInterval(function () {
         console.log("fetching")
-        startShortPollingFor(id, interval3, "Button3", "GifImg3");
+        startShortPollingFor("resized-" + id, interval3, "Button3", "GifImg3");
     }, 2000);
 }
 
