@@ -2,6 +2,7 @@
 <html lang="en">
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Image Processing App</title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -12,21 +13,32 @@
 <body>
 <div id="layout">
 
+    <h2>Serverless GIF generation on AWS</h2>
+    <div id="info" style=" text-align: left;">
 
-    <div id="info">
-        <h2>Serverless GIF generation on AWS</h2>
-        <p>I created this site to generate some cool GIFs starting from an image, applying some custom algorithms. </p>
-        <p>The site is hosted on AWS, has a complete serverless architechture, and uses
-            S3, ApiGateway, Lambda, SNS and SQS. For a site this simple it´s clearly an overkill. It´s mostly created as
-            a
-            way to
-            consolidate my AWS learning. The source code and a detailed explanation can be found on GitHub.
-        </p>
+        <div>
+
+            <p>This app takes an image and generates some cool GIFs. </p>
+            <p>It´s completely serverless and hosted on AWS, using S3, ApiGateway, Lambda and SNS. <br>
+
+            </p>
+            <p>
+                Source code, architecture diagrams, explanation
+                in
+                <a href='https://github.com/MMazzini1/serverless-image-processing'>GitHub</a>
+            </p>
+
+
+        </div>
+
     </div>
 
     <div id="UPLOAD">
         <div class="intro">
-            <h3>Upload a photo and generate the three GIFs types shown below!</h3>
+            <h3>Upload an image and click on GENERATE GIFS (examples of output shown below)!</h3>
+            <p>Picture must be jpeg/png, and under 3 MB.
+                Generation takes less than a minute.</p>
+
             <form id="form" enctype="multipart/form-data">
                 <div class="input-group" >
 
@@ -39,7 +51,7 @@
 
 
 
-                <button class="submit-btn" type="submit">Upload</button>
+                <button class="submit-btn" type="submit">GENERATE GIFS</button>
             </form>
         </div>
     </div>
@@ -54,21 +66,21 @@
                    Download
                </a>-->
             <div>
-                <button id="Button">Download gif</button>
+                <button id="Button">Download</button>
             </div>
         </div>
 
         <div id="resized2-">
             <img  src="templegifgenerationcyclic.gif" class="gif-img">
             <div>
-                <button id="Button2">Download gif</button>
+                <button id="Button2">Download</button>
             </div>
         </div>
 
         <div id="resized3-">
             <img  src="officegifgenerationrecursive.gif" class="gif-img">
             <div>
-                <button id="Button3">Download gif</button>
+                <button id="Button3">Download</button>
             </div>
         </div>
     </div>

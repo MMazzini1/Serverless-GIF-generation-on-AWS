@@ -28,7 +28,7 @@ function updateDownloadButton(url, button) {
     a.download = 'MyGif';
     a.href = url
     a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
-    button.innerText = "Download gif"
+    button.innerText = "Download"
 
 
     //clone and replace, to delete old event listeners on button
