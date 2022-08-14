@@ -1,30 +1,61 @@
 const GET_GIF_URL = "https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-processing-app-destination/"
 
-async function settingGif(id, buttonId, imgId) {
-    const res = await fetchGif(id)
-    console.log(res)
+
+async function updateGIF(res, gifType) {
+    //should prent res
+    console.log("res " + res)
     const blob = await res.blob()
-    const img =  document.getElementById(imgId)
-    img.src = URL.createObjectURL(blob)
 
-    img.width = 600
-    img.heigh = 600
+    const div = document.getElementById(gifType);
+    const img = div.getElementsByTagName('img')[0];
+    const button = div.getElementsByTagName('button')[0];
 
-    var button = setDownloadButton(blob, buttonId)
 
-    //document.getElementById(buttonId).replaceWith(button)
-    //document.getElementById(imgId).replaceWith(img)
+    //update img url
+    const url = URL.createObjectURL(blob)
+    img.src = url
+
+
+    updateDownloadButton(url, button);
+
 
 }
 
 
-function startShortPollingFor(id, interval, buttonId, imgId) {
-    fetchGif(id)
+function updateDownloadButton(url, button) {
+    //for downloading gif on click
+    let a = document.createElement('a');
+    a.download = 'MyGif';
+    a.href = url
+    a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
+    button.innerText = "Download gif"
+
+
+    //clone and replace, to delete old event listeners on button
+    var buttonClone = button.cloneNode(true);
+    buttonClone.addEventListener("click", function () {
+        a.click()
+    })
+    button.replaceWith(buttonClone);
+}
+
+function updateDownloadButtonOnStartUp(gifType, url) {
+    var div = document.getElementById(gifType);
+    var button = div.getElementsByTagName('button')[0];
+    updateDownloadButton(url, button)
+}
+
+
+function startShortPollingFor(id, gifType, interval) {
+    let objectKey = gifType + id;
+    //should print objtect url
+    console.log("fetching: " + objectKey)
+    fetchGif(objectKey)
         .then(response => {
             if (response.status == "200") {
                 console.log("Stopping short polling on 200")
                 clearInterval(interval)
-                settingGif(id, buttonId, imgId)
+                updateGIF(response, gifType)
             } else if (response.status == "404") {
                 console.log("404, result not yet available")
             }
@@ -41,30 +72,28 @@ function startShortPollingForGif(id) {
     console.log("Initializing short polling for " + id)
 
     const interval = setInterval(function () {
-        console.log("fetching")
-        startShortPollingFor("resized-" + id, interval, "Button", "GifImg");
+        startShortPollingFor(id, "resized-", interval);
     }, 2000);
 
     const interval2 = setInterval(function () {
-        console.log("fetching")
-        startShortPollingFor("resized2-" + id, interval2, "Button2", "GifImg2");
+        startShortPollingFor(id, "resized2-", interval2);
     }, 2000);
 
     const interval3 = setInterval(function () {
-        console.log("fetching")
-        startShortPollingFor("resized-" + id, interval3, "Button3", "GifImg3");
+        startShortPollingFor(id, "resized3-", interval3);
     }, 2000);
 }
 
 
 function fetchGif(id) {
+    console.log("executing get for url: " + id)
     return fetch(GET_GIF_URL + id)
 }
 
-function setDownloadButton(blob, buttonId) {
+function setDownloadButton(blob, buttonId, url) {
     let a = document.createElement('a');
     a.download = 'myGif';
-    a.href = window.URL.createObjectURL(blob);
+    a.href = url
     a.dataset.downloadurl = ['image/gif', a.download, a.href].join(':');
 
     let button = document.getElementById(buttonId)

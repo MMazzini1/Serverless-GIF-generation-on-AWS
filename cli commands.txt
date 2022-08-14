@@ -2,6 +2,13 @@
 => update lambda
  aws lambda update-function-code --function-name create-blur-gif --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
 
+  aws lambda update-function-code --function-name create-cyclic-gif --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
+
+
+aws lambda update-function-code --function-name create-recursive-gif --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
+
+create-recursive-gif
+
 
 => upload to s3
 aws s3 cp a.jpg s3://image-processing-app-uploads/ --region "us-east-1"
@@ -201,13 +208,8 @@ timeout
 
 ___________
 
-1) limpiar codigo
-2)abstraer codigo lambda
-- ABSTRAER EL CODIGO DEL LAMBDA YA EXISTENTE PARA SER REUSADO POR LOS TRES
-- Al momento de guardar, usar una KEY distinta
-- AHORA RECIBEN UN EVENTO DE SNS, no uno de S3.
-- Conectar esa KEY con el front-end !!
-3) algoritmo recursivo funcionando en cuadrado 2
+
+
 
 
 -FIX LOGGING    <==================================================TODO
@@ -223,6 +225,7 @@ ___________
 - MODARL PROCESAMIENTO     <==================================================TODO
 - VALIDACION LIMITE MAS FILE TYPE 3MB LAMBDA  <==================================================TODO
 - EMPROLIJAR TESTS, ASSERT  <==================================================TODO
+- tamaño resize final  <==================================================TODO
 - FIX CORS 413....SI VALIDO NO HACE FALTA
 
 
