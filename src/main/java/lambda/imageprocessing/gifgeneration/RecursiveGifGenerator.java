@@ -26,15 +26,6 @@ public class RecursiveGifGenerator implements GifGenerator{
     private static final Logger logger = LoggerFactory.getLogger(RecursiveGifGenerator.class);
 
 
-    private ProcessFragment processFragment = input ->
-    {
-        Color squareAverageColor = imageProcessingUtils.averageColor(input.srcImage, input.topLeftSquareXCoordinate, input.topLeftSquareYCoordinate, input.currWidth, input.currHeight);
-        BufferedImage colorSquare = new BufferedImage(input.currWidth, input.currHeight, BufferedImage.TYPE_3BYTE_BGR);
-        imageProcessingUtils.setColor(colorSquare, squareAverageColor);
-        return colorSquare;
-    };
-
-
     @Override
     public ByteArrayOutputStream generateGif(BufferedImage srcImage) throws IOException {
         List<BufferedImage> imgs = generateFrames(srcImage);

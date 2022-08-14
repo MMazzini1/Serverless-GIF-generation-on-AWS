@@ -84,4 +84,15 @@ public class ImageProcessingUtils {
 
 
 
+    public final BufferedImage cloneAndColorize(BufferedImage image, Color color, int alpha) {
+        BufferedImage clone = new BufferedImage(image.getWidth(),
+                image.getHeight(), image.getType());
+        Graphics2D g2d = clone.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+        g2d.dispose();
+        return clone;
+    }
+
 }
