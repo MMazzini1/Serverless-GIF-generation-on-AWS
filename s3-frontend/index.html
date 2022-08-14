@@ -19,12 +19,11 @@
         <div>
 
             <p>This app takes an image and generates some cool GIFs. </p>
-            <p>It´s completely serverless and hosted on AWS, using S3, ApiGateway, Lambda and SNS. <br>
+            <p>It´s completely serverless and hosted on AWS (S3, ApiGateway, Lambda and SNS) <br>
 
             </p>
             <p>
-                Source code, architecture diagrams, explanation
-                in
+                Source code, architecture diagrams, and others in
                 <a href='https://github.com/MMazzini1/serverless-image-processing'>GitHub</a>
             </p>
 
@@ -33,11 +32,17 @@
 
     </div>
 
-    <div id="UPLOAD">
+    <div id="UPLOAD" style ="margin-top:50px">
         <div class="intro">
-            <h3>Upload an image and click on GENERATE GIFS (examples of output shown below)!</h3>
-            <p>Picture must be jpeg/png, and under 3 MB.
-                Generation takes less than a minute.</p>
+            <h3>Upload an image and click on GENERATE GIFS</h3>
+
+            <p > Picture must be
+                <span style="color: #ff0000">        jpeg/png</span>
+                and under
+                <span style="color: #ff0000">     3 MB.</span>
+
+                Generation takes less than a minute.
+                Examples are shown below. </p>
 
             <form id="form" enctype="multipart/form-data">
                 <div class="input-group" >
