@@ -36,7 +36,8 @@ public class BlurGifGenerator implements GifGenerator {
         return bytes;
     }
 
-    private List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException {
+    @Override
+    public List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException {
 
         int width = srcImage.getWidth();
         int height = srcImage.getHeight();
