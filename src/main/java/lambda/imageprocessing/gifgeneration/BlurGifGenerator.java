@@ -2,6 +2,7 @@ package lambda.imageprocessing.gifgeneration;
 
 import lambda.imageprocessing.ImageFragment;
 import lambda.imageprocessing.ImageProcessingUtils;
+import lambda.imageprocessing.gifgeneration.FrameGeneratorHelper.ProcessFragmentParameters;
 import lambda.imageprocessing.gifwriter.GifWriter;
 import lambda.imageprocessing.gifwriter.impl.GifWriterImpl;
 import org.slf4j.Logger;
@@ -16,12 +17,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public class BlurGifGenerator implements GifGenerator {
 
+    private FrameGeneratorHelper frameGeneratorHelper = new FrameGeneratorHelper();
     private ImageProcessingUtils imageProcessingUtils = new ImageProcessingUtils();
     private GifWriter gifWriter = new GifWriterImpl();
     private static final Logger logger = LoggerFactory.getLogger(BlurGifGenerator.class);
+
+
+    private ProcessFragment processFragment = input ->
+    {
+        Color squareAverageColor = imageProcessingUtils.averageColor(input.srcImage, input.topLeftSquareXCoordinate, input.topLeftSquareYCoordinate, input.currWidth, input.currHeight);
+        BufferedImage colorSquare = new BufferedImage(input.currWidth, input.currHeight, BufferedImage.TYPE_3BYTE_BGR);
+        imageProcessingUtils.setColor(colorSquare, squareAverageColor);
+        return colorSquare;
+    };
 
 
     @Override
@@ -42,57 +54,21 @@ public class BlurGifGenerator implements GifGenerator {
         int width = srcImage.getWidth();
         int height = srcImage.getHeight();
 
-
-        int minDimension = Math.min(width, height) / 2;
         List<BufferedImage> imgs = new ArrayList<>();
         imgs.add(srcImage);
 
-
         int minimumPixelSize = 4;
-        while (minDimension >= minimumPixelSize && width >= minimumPixelSize && height >= minimumPixelSize) {
-            BufferedImage bufferedImage = generateFrame(srcImage, minDimension);
+        while (width >= minimumPixelSize && height >= minimumPixelSize) {
+            BufferedImage bufferedImage = frameGeneratorHelper.generateFrames(srcImage,width,height, processFragment);
             imgs.add(bufferedImage);
-            minDimension = minDimension / 2;
+            width = width / 2;
+            height = height / 2;
         }
-
         Collections.reverse(imgs);
-
         return imgs;
     }
 
 
-    private BufferedImage generateFrame(BufferedImage srcImage, Integer squareSize) throws IOException {
-        List<ImageFragment> result = new ArrayList<>();
-        Integer iterX = (int) Math.ceil(((double) srcImage.getWidth() / squareSize));
-        Integer iterY = (int) Math.ceil(((double) srcImage.getHeight() / squareSize));
-        for (int i = 0; i < Math.ceil(iterX); i++) {
-            for (int j = 0; j < iterY; j++) {
-                int topLeftSquareXCoordinate = i * squareSize;
-                int topLeftSquareYCoordinate = j * squareSize;
-
-                Integer squareWidth = squareSize;
-                Integer squareHeight = squareSize;
-
-                //adjust square width as to no go beyond original image right border
-                if (topLeftSquareXCoordinate > srcImage.getWidth() - squareSize) {
-                    squareWidth = srcImage.getWidth() - topLeftSquareXCoordinate;
-                }
-
-                //adjust square width as to no go beyond original image left border
-                if (topLeftSquareYCoordinate > srcImage.getHeight() - squareSize) {
-                    squareHeight = srcImage.getHeight() - topLeftSquareYCoordinate;
-                }
-
-                Color squareAverageColor = imageProcessingUtils.averageColor(srcImage, topLeftSquareXCoordinate, topLeftSquareYCoordinate, squareWidth, squareHeight);
-                BufferedImage colorSquare = new BufferedImage(squareWidth, squareHeight, BufferedImage.TYPE_3BYTE_BGR);
-                imageProcessingUtils.setColor(colorSquare, squareAverageColor);
-                result.add(new ImageFragment(colorSquare, topLeftSquareXCoordinate, topLeftSquareYCoordinate));
-            }
-        }
-
-        BufferedImage resultFrame = imageProcessingUtils.joinImageFragments(result, srcImage.getWidth(), srcImage.getHeight());
-        return resultFrame;
-    }
 
 
 }

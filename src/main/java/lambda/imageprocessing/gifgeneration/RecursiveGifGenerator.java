@@ -20,9 +20,19 @@ import java.util.List;
 public class RecursiveGifGenerator implements GifGenerator{
 
 
+    private FrameGeneratorHelper frameGeneratorHelper = new FrameGeneratorHelper();
     private ImageProcessingUtils imageProcessingUtils = new ImageProcessingUtils();
     private GifWriter gifWriter = new GifWriterImpl();
-    private static final Logger logger = LoggerFactory.getLogger(BlurGifGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecursiveGifGenerator.class);
+
+
+    private ProcessFragment processFragment = input ->
+    {
+        Color squareAverageColor = imageProcessingUtils.averageColor(input.srcImage, input.topLeftSquareXCoordinate, input.topLeftSquareYCoordinate, input.currWidth, input.currHeight);
+        BufferedImage colorSquare = new BufferedImage(input.currWidth, input.currHeight, BufferedImage.TYPE_3BYTE_BGR);
+        imageProcessingUtils.setColor(colorSquare, squareAverageColor);
+        return colorSquare;
+    };
 
 
     @Override
@@ -47,29 +57,14 @@ public class RecursiveGifGenerator implements GifGenerator{
 
         int minimumPixelSize = 4;
         while (width >= minimumPixelSize && height >= minimumPixelSize) {
-            BufferedImage bufferedImage = generateFrame(srcImage, width, height);
+            BufferedImage resized = imageProcessingUtils.resize(srcImage, width, height);
+            ProcessFragment processFragment = input -> resized;
+            BufferedImage bufferedImage = frameGeneratorHelper.generateFrames(srcImage, resized.getWidth(), resized.getHeight(), processFragment);
             imgs.add(bufferedImage);
             width = width / 2;
             height = height / 2;
         }
         return imgs;
-    }
-
-
-    private BufferedImage generateFrame(BufferedImage srcImage, int width, Integer height) throws IOException {
-        List<ImageFragment> result = new ArrayList<>();
-        BufferedImage resized = imageProcessingUtils.resize(srcImage, width, height);
-        int resizedWidth = resized.getWidth();
-        int resizedHeight = resized.getHeight();
-        for (int i = 0; i <= srcImage.getWidth() / resizedWidth; i++) {
-            for (int j = 0; j <= srcImage.getHeight() / resizedHeight; j++) {
-                int topLeftSquareXCoordinate = i * resizedWidth;
-                int topLeftSquareYCoordinate = j * resizedHeight;
-                result.add(new ImageFragment(resized, topLeftSquareXCoordinate, topLeftSquareYCoordinate));
-            }
-        }
-        BufferedImage resultFrame = imageProcessingUtils.joinImageFragments(result, srcImage.getWidth(), srcImage.getHeight());
-        return resultFrame;
     }
 
 
