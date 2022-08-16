@@ -18,13 +18,13 @@
 
         <div>
 
-            <p>This app takes an image and generates some cool GIFs. </p>
-            <p>It´s completely serverless and hosted on AWS (S3, ApiGateway, Lambda and SNS) <br>
-
-            </p>
-            <p>
+            <p>This app takes an image and generates some cool GIFs. <br>
+                It´s completely serverless and hosted on AWS (S3, ApiGateway, Lambda and SNS)
                 Source code, architecture diagrams, and others in
                 <a href='https://github.com/MMazzini1/serverless-image-processing'>GitHub</a>
+                <br>
+
+
             </p>
 
 
@@ -32,56 +32,57 @@
 
     </div>
 
-    <div id="UPLOAD" style="margin-top:50px">
-        <div class="intro">
-            <h3>Upload an image and click on GENERATE GIFS</h3>
 
-            <p> Picture must be
-                <span style="color: #ff0000">        jpeg/png</span>
-                and under
-                <span style="color: #ff0000">     3 MB.</span>
+    <div id="UPLOAD" style="margin-top:20px ; text-align: center;">
 
-                Generation takes less than a minute.
-                Examples are shown below. </p>
+        <form id="form" enctype="multipart/form-data">
+            <div style="display: flex">
+                <div style="  flex: 2">
+                    <input id="file" type="file" accept=".jpg, .png"
+                           style='display:inline-block;position:relative;float:left;'/>
+                    <p id="feedbackd"></p>
+                    <p style=" text-align: left; font-size: 10px; display:block"> Picture must be
+                        <span style="color: #ff0000">        jpg/png</span>
+                        and under
+                        <span style="color: #ff0000">    3 MB.</span>
+                        Generation takes less than a minute. </p>
 
-            <form id="form" enctype="multipart/form-data">
-                <div class="input-group">
-
-
-                    <labelfor
-                    ="file-upload" class="custom-file-upload">
-                    <i class="fa fa-cloud-upload"></i>
-                    </label>
-                    <input id="file" type="file"/>
-                    <p id="feedback"></p>
+                    <p id="feedback" style=" text-align: left; font-size: 10px"></p>
+                </div>
+                <div style=" flex: 3">
+                    <button id="generatebtn" class="submit-btn" type="submit" disabled="true"
+                            style='display:inline-block;position:relative;float:left;'>GENERATE GIFS
+                    </button>
+                    <p id="generationFeedback" style='display:inline-block;'></p>
                 </div>
 
 
-                <button id = "generatebtn" class="submit-btn" type="submit" disabled="true">GENERATE GIFS</button>
-            </form>
-        </div>
+            </div>
+
+
+        </form>
+
+
     </div>
 
 
     <div id="gif-examples" class="container">
+        <div id="resized3-">
+            <img src="gifs/gifgenerationrecursive.gif" class="gif-img">
+            <div>
+                <button id="Button3">Download</button>
+            </div>
+        </div>
         <div id="resized-">
-            <img src="gifgenerationblur.gif" class="gif-img">
+            <img src="gifs/gifgenerationblur.gif" class="gif-img">
             <div>
                 <button id="Button">Download</button>
             </div>
         </div>
-
         <div id="resized2-">
-            <img src="templegifgenerationcyclic.gif" class="gif-img">
+            <img src="gifs/gifgenerationcyclic.gif" class="gif-img">
             <div>
                 <button id="Button2">Download</button>
-            </div>
-        </div>
-
-        <div id="resized3-">
-            <img src="officegifgenerationrecursive.gif" class="gif-img">
-            <div>
-                <button id="Button3">Download</button>
             </div>
         </div>
     </div>
@@ -99,12 +100,12 @@
 
 
         function returnFileSize(number) {
-            if(number < 1024) {
+            if (number < 1024) {
                 return number + 'bytes';
-            } else if(number >= 1024 && number < 1048576) {
-                return (number/1024).toFixed(2) + 'KB';
-            } else if(number >= 1048576) {
-                return (number/1048576).toFixed(2) + 'MB';
+            } else if (number >= 1024 && number < 1048576) {
+                return (number / 1024).toFixed(2) + 'KB';
+            } else if (number >= 1048576) {
+                return (number / 1048576).toFixed(2) + 'MB';
             }
         }
 
@@ -121,23 +122,26 @@
                 console.log({file, name, type, size, lastModified});
 
                 const feedback = document.getElementById('feedback');
-          /*      var msg = ` File Name: ${name} <br/>
-              File Size: ${size} <br/>
-              File type: ${type} <br/>
-              File Last Modified: ${new Date(lastModified)}`;*/
 
+
+                console.log(type)
+                var button = document.getElementById('generatebtn');
                 if (size > 3 * 1024 * 1024) {
                     msg = `The allowed file size is 3MB. The file you are trying to upload is of ${returnFileSize(size)}`;
                     feedback.innerText = msg
-                } else {
-                    // msg = `<span style="color:green;"> A ${returnFileSize(size)} file has been uploaded successfully. </span>`;
-                    var button = document.getElementById('generatebtn');
-                    button.disabled = false;
-                    // feedback.innerText = "File is being uploaded"
+                    button.disabled = true;
+                    return;
                 }
 
+                if (type != "image/jpeg" && type != "image/png") {
+                    msg = `The allowed file types are jpg/png`;
+                    feedback.innerText = msg
+                    button.disabled = true;
+                    return;
+                }
 
-
+                button.disabled = false;
+                feedback.innerText = "Click on GENERATE"
 
             }
         });
@@ -153,9 +157,12 @@
             console.log("input file: " + file)
 
 
+            console.log('files size', file.size);
 
-            console.log('files size',   file.size);
+            const feedback = document.getElementById("generationFeedback");
 
+
+            feedback.innerText = "Uploading file to S3..."
             fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
                 method: "post",
                 body: formData,
@@ -163,10 +170,14 @@
                 .then(response => response.json())
                 .then(json => {
                     console.log(json)
+                    feedback.innerText = "Generating GIFs..."
                     startShortPollingForGif(json.id)
                 })
                 .catch(
-                    error => ("Something went wrong!", error))
+                    error => {
+                        console.log("Something went wrong!", error)
+                        feedback.innerText = "Upload failed, try again."
+                    })
                 .finally(() => {
                     formData = new FormData();
                 })

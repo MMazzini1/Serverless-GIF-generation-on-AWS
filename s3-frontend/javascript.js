@@ -82,6 +82,15 @@ function startShortPollingForGif(id) {
     const interval3 = setInterval(function () {
         startShortPollingFor(id, "resized3-", interval3);
     }, 2000);
+
+/*
+    while (true){
+        console.log("interval 3 " + interval3)
+        setTimeout(function(){}, 1000)
+    }
+
+*/
+
 }
 
 

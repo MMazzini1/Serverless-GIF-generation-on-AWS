@@ -49,6 +49,16 @@ public class BlurGifGenerator implements GifGenerator {
     }
 
     @Override
+    public GifWriter getGifWriter() {
+        return gifWriter;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
+
+    @Override
     public List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException {
 
         int width = srcImage.getWidth();

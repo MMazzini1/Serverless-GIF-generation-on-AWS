@@ -38,6 +38,16 @@ public class RecursiveGifGenerator implements GifGenerator{
         return bytes;
     }
 
+    @Override
+    public GifWriter getGifWriter() {
+        return gifWriter;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
+
     public List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException {
 
         int width = srcImage.getWidth();
@@ -57,6 +67,7 @@ public class RecursiveGifGenerator implements GifGenerator{
         }
         return imgs;
     }
+
 
 
 

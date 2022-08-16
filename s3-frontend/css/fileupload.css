@@ -1,16 +1,21 @@
 /*input[type="file"] {
-    display: none;
+    display: none;      border: 1px solid #ccc;
+
+
 }*/
 
 
+/*
+
 .custom-file-upload {
-    border: 1px solid #ccc;
-    display: inline-block;
+
     padding: 10px 24px;
     cursor: pointer;
+    width: 900px;
 }
+*/
 
 
 .submit-btn {
-    margin-top: 40px;
+
 }

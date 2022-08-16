@@ -4,10 +4,9 @@
 
   aws lambda update-function-code --function-name create-cyclic-gif --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
 
-
 aws lambda update-function-code --function-name create-recursive-gif --zip-file fileb://Lambda-functions-1.0-SNAPSHOT.jar
 
-create-recursive-gif
+
 
 
 => upload to s3
@@ -129,8 +128,7 @@ https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/s3?key=image-proces
 
 FANOUT
 
-FRONT-END DONE 
-RE-ESTRUCTURACION FRONT-END <=== DONE
+
 PONER 2 CUADRITOS MAS, CON GIF INICIAL DISTINTO EN START UP <=== DONE
 CUANDO LE DAS UPLOAD, TIENEN QUE COMENZAR EL SHORT POLLING EN SIMULTANEO LAS 3 IMAGENES A DISTINTAS URLS  /resized-1 resized-2 residez-3  <=== DONE
 GENERIFICAR LAS FUNCIONES PARA QUE LOS IDS DE LOS ELEMENTOS PASEN COMO PARAMETROS    <=== DONE
@@ -218,17 +216,29 @@ ___________
 
 
 
-- EL BOTON DE DOWNLOAD NO ANDA  <==================================================TODO
+- EL BOTON DE DOWNLOAD NO ANDA  <=DONE	
 - PONER LOS GIFS UNO AL LADO DE CADA UNO <==================================================TODO
-- REPLACE FILE TYPE DURING DOWNLOAD  <==================================================TODO
+
 - MODAL CARGANDO DURANTE EL UPLOAD   <==================================================TODO
 - MODARL PROCESAMIENTO     <==================================================TODO
 - VALIDACION LIMITE MAS FILE TYPE 3MB LAMBDA  <==================================================TODO
+
+
 - EMPROLIJAR TESTS, ASSERT  <==================================================TODO
 - tamaño resize final  <==================================================TODO
 - FIX CORS 413....SI VALIDO NO HACE FALTA
+ENVIRONMENT VARIABLE PARA SIZE DEL GIF 
+FIX BORDES NEGROS GIFS <= creo que es por el divisor!!!!
+TERMIANR SHORT POLLING EVENTUALMENTE
+DEFINIR FORMATO FINAL FRONT END
+MEJORAR ESTILOS DEL FRONT END
+SACAR LOGGING INNECESARIO
+UNA DESCRIPCION X CUADRITO
+pr que se necesita async????
+-CAMBIAR GIFS X EL MISMO!!!
 
 
+LE SUBI EL TIMEOUT AL LAMBDA!!!!!!!!!!!!!!
 
 
 

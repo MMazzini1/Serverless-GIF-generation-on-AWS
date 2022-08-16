@@ -16,7 +16,7 @@ class CyclicGifGeneratorTest {
 
     @Test
     public void testCreateGIF() throws IOException {
-        BufferedImage bufferedImage = testUtils.loadImage("photo.png");
+        BufferedImage bufferedImage = testUtils.loadImage("photo_test.png");
         List<BufferedImage> imageList = recursiveGifGenerator.generateFrames(bufferedImage);
         testUtils.writeGif(imageList, "cyclic");
     }
