@@ -24,6 +24,32 @@ aws s3 cp a.jpg s3://image-processing-app-uploads/ --region "us-east-1"
 => GIF GENERATION
 
 
+TODO FINAL
+-Errores CORS cuando rompe?
+-Sacar logueo de la consola <<<========
+-Terminar short polling dsp de cierto tiempo
+-Escribir readme.md <<<=====
+-Mejorar el texto de la pagina <<<<====
+-Agregar diagrama del readme.md al front end <<<======
+-Eliminar favicon <<<=====
+-Ver de agragdar un poco la resolucion final de los archivos
+-Ver de acomodar el tamaño de las imagenes para hacerlas mas grandes
+-Solucionar logging o sacarlo y usar el del contexto <<<<<======
+-
+
+
+readme.md 
+
+readme, cual era la gracia sin esto
+una EC2 para todo,
+==> mas barato esto, realmente
+escalar x separado
+
+Lambda =>
+reuso de imagen comprimida
+timeout 
+
+
 
 
 UPLOAD
@@ -193,16 +219,6 @@ suscribir lambda que ya tengo al topico este de sns  <========= DONE
 
 
 -------------
-readme.md 
-
-readme, cual era la gracia sin esto
-una EC2 para todo,
-==> mas barato esto, realmente
-escalar x separado
-
-Lambda =>
-reuso de imagen comprimida
-timeout 
 
 ___________
 
@@ -241,6 +257,8 @@ pr que se necesita async????
 LE SUBI EL TIMEOUT AL LAMBDA!!!!!!!!!!!!!!
 
 
-
+- cREAR bucket
+gifs.martinmazzini.com y hostear ahi la web
+crear distribucion de cloudfront segun guia, 
 
 

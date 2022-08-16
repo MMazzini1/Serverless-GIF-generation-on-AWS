@@ -1,4 +1,3 @@
-
 function returnFileSize(number) {
     if (number < 1024) {
         return number + 'bytes';
@@ -13,19 +12,17 @@ function returnFileSize(number) {
 function setInputFileListener(inputFile) {
     inputFile.addEventListener('change', (event) => {
         const files = event.target.files;
-        console.log('files', files);
+
 
         for (const file of files) {
             const name = file.name;
             const type = file.type ? file.type : 'NA';
             const size = file.size;
             const lastModified = file.lastModified;
-            console.log({file, name, type, size, lastModified});
 
             const feedback = document.getElementById('feedback');
 
 
-            console.log(type)
             var button = document.getElementById('generatebtn');
             if (size > 3 * 1024 * 1024) {
                 msg = `The allowed file size is 3MB. The file you are trying to upload is of ${returnFileSize(size)}`;
@@ -56,10 +53,6 @@ const handleSubmit = (event) => {
     formData = new FormData();
     let file = inputFile.files[0];
     formData.append("files", file);
-    console.log("input file: " + file)
-
-
-    console.log('files size', file.size);
 
     const feedback = document.getElementById("generationFeedback");
 
@@ -71,21 +64,16 @@ const handleSubmit = (event) => {
     })
         .then(response => response.json())
         .then(json => {
-            console.log(json)
             feedback.innerText = "Generating GIFs..."
-
             const imgs = document.getElementsByClassName("gif-img");
-            for (img of imgs){
-                img.src ="gifs/Spinner-1s-416px.gif"
-
+            for (img of imgs) {
+                img.src = "gifs/Spinner-1s-416px.gif"
             }
-
-
             startShortPollingForGif(json.id)
         })
         .catch(
             error => {
-                console.log("Something went wrong!", error)
+                // console.log("Something went wrong!", error)
                 feedback.innerText = "Upload failed, try again."
             })
         .finally(() => {
