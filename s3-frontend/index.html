@@ -4,32 +4,24 @@
 <head>
     <meta charset="utf-8">
     <title>Image Processing App</title>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/gifpanel.css">
-    <link rel="stylesheet" type="text/css" href="css/fileupload.css">
-    <script type="text/javascript" src="javascript.js"></script>
+    <script type="text/javascript" src="js/gifs.js"></script>
+    <script type="text/javascript" src="js/inputFile.js"></script>
 </head>
 <body>
 <div id="layout">
 
-    <h2>Serverless GIF generation on AWS</h2>
+    <h2>Serverlessss GIF generation on AWS</h2>
     <div id="info" style=" text-align: left;">
-
         <div>
-
             <p>This app takes an image and generates some cool GIFs. <br>
                 It´s completely serverless and hosted on AWS (S3, ApiGateway, Lambda and SNS)
                 Source code, architecture diagrams, and others in
                 <a href='https://github.com/MMazzini1/serverless-image-processing'>GitHub</a>
                 <br>
-
-
             </p>
-
-
         </div>
-
     </div>
 
 
@@ -55,14 +47,8 @@
                     </button>
                     <p id="generationFeedback" style='display:inline-block; margin-top: 0'></p>
                 </div>
-
-
             </div>
-
-
         </form>
-
-
     </div>
 
 
@@ -92,164 +78,11 @@
         updateDownloadButtonOnStartUp("resized-", "gifgenerationblur.gif")
         updateDownloadButtonOnStartUp("resized2-", "templegifgenerationcyclic.gif")
         updateDownloadButtonOnStartUp("resized3-", "officegifgenerationrecursive.gif")
-
-
-
-
-
         const form = document.getElementById("form");
         const inputFile = document.getElementById("file");
         var formData = new FormData();
-
-
-        function returnFileSize(number) {
-            if (number < 1024) {
-                return number + 'bytes';
-            } else if (number >= 1024 && number < 1048576) {
-                return (number / 1024).toFixed(2) + 'KB';
-            } else if (number >= 1048576) {
-                return (number / 1048576).toFixed(2) + 'MB';
-            }
-        }
-
-
-        inputFile.addEventListener('change', (event) => {
-            const files = event.target.files;
-            console.log('files', files);
-
-            for (const file of files) {
-                const name = file.name;
-                const type = file.type ? file.type : 'NA';
-                const size = file.size;
-                const lastModified = file.lastModified;
-                console.log({file, name, type, size, lastModified});
-
-                const feedback = document.getElementById('feedback');
-
-
-                console.log(type)
-                var button = document.getElementById('generatebtn');
-                if (size > 3 * 1024 * 1024) {
-                    msg = `The allowed file size is 3MB. The file you are trying to upload is of ${returnFileSize(size)}`;
-                    feedback.innerText = msg
-                    button.disabled = true;
-                    return;
-                }
-
-                if (type != "image/jpeg" && type != "image/png") {
-                    msg = `The allowed file types are jpg/png`;
-                    feedback.innerText = msg
-                    button.disabled = true;
-                    return;
-                }
-
-                button.disabled = false;
-                feedback.innerText = "Click on GENERATE"
-
-            }
-        });
-
-
-        const handleSubmit = (event) => {
-            event.preventDefault();
-
-
-            formData = new FormData();
-            let file = inputFile.files[0];
-            formData.append("files", file);
-            console.log("input file: " + file)
-
-
-            console.log('files size', file.size);
-
-            const feedback = document.getElementById("generationFeedback");
-
-
-            feedback.innerText = "Uploading file to S3..."
-            fetch("https://x7t7f93zpk.execute-api.us-east-1.amazonaws.com/test1/fileupload", {
-                method: "post",
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(json => {
-                    console.log(json)
-                    feedback.innerText = "Generating GIFs..."
-
-                    const imgs = document.getElementsByClassName("gif-img");
-                    for (img of imgs){
-                        img.src ="gifs/Spinner-1s-416px.gif"
-
-                    }
-
-
-                    startShortPollingForGif(json.id)
-                })
-                .catch(
-                    error => {
-                        console.log("Something went wrong!", error)
-                        feedback.innerText = "Upload failed, try again."
-                    })
-                .finally(() => {
-                    formData = new FormData();
-                })
-
-        };
-
-
+        setInputFileListener(inputFile)
         form.addEventListener("submit", handleSubmit)
-
-
     </script>
 </body>
-
-
-<script>
-
-
-    /*
-
-<!--
-    <div id="results">
-        <div>
-            <h1>Single File Uploadd</h1>
-            <input type="file" id="file-uploader" accept=".jpg, .png">
-            <p>Upload a file and see the output in browser console</p>
-
-            <p id="feedback"></p>
-        </div>
--->
-
-    /* const fileUploader = null;
-        fileUploader.addEventListener('change', (event) => {
-            const files = event.target.files;
-            const file = event.target.files[0];
-            console.log('files', files);
-
-            // show the upload feedback
-            const size = file.size;
-            const feedback = document.getElementById('feedback');
-            var msg = `File ${files[0].name} uploaded successfully!`;
-
-            if (size > 1024 * 1024) {
-                msg = `<span style="color:red;">The allowed file size is 1MB. The file you are trying to upload is of ${returnFileSize(size)}</span>`;
-            } else {
-                msg = `<span style="color:green;"> A ${returnFileSize(size)} file has been uploaded successfully. </span>`;
-            }
-
-            feedback.innerHTML = msg;
-        });
-
-        function returnFileSize(number) {
-            if (number < 1024) {
-                return number + 'bytes';
-            } else if (number >= 1024 && number < 1048576) {
-                return (number / 1024).toFixed(2) + 'KB';
-            } else if (number >= 1048576) {
-                return (number / 1048576).toFixed(2) + 'MB';
-            }
-        }*/
-
-
-</script>
-
 </html>
