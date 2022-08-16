@@ -4,6 +4,7 @@ package lambda.handler;
 // import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.amazonaws.services.s3.event.S3EventNotification;
 
@@ -11,12 +12,10 @@ import java.util.List;
 
 public class DeserializeSNSTest {
 
-    public static final String PROCESSED_IMAGES_BUCKET = "image-processing-app-destination";
 
 
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Test
-    public void test(){
+    public void deserializeSNSEventTest(){
 
         String s = "{\n" +
                 "    \"Records\": [\n" +
@@ -58,8 +57,8 @@ public class DeserializeSNSTest {
                 "    ]\n" +
                 "}";
 
-        S3EventNotification s3EventNotification = S3EventNotification.parseJson(s);
-        S3EventNotification s3eventNotifcation = gson.fromJson(s, S3EventNotification.class);
+        Assertions.assertDoesNotThrow(() ->  S3EventNotification.parseJson(s));
+
 
 
 

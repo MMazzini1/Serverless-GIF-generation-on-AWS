@@ -22,21 +22,6 @@ public class CyclicGifGenerator implements GifGenerator {
     private GifWriter gifWriter = new GifWriterImpl();
     private static final Logger logger = LoggerFactory.getLogger(CyclicGifGenerator.class);
 
-
-    @Override
-    public ByteArrayOutputStream generateGif(BufferedImage srcImage) throws IOException {
-        java.util.List<BufferedImage> imgs = generateFrames(srcImage);
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        Integer delayBetweenFrames = 3000 / imgs.size();
-        try (ImageOutputStream output = new MemoryCacheImageOutputStream(bytes)) {
-            gifWriter.writeGifToStream(imgs, delayBetweenFrames, true, output);
-        } catch (Exception e) {
-            logger.error("Error generating GIF", e);
-        }
-        return bytes;
-    }
-
-
     public java.util.List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException {
 
         int width = srcImage.getWidth();

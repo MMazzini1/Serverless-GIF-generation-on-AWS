@@ -49,8 +49,6 @@ public class GIFGenerationLambdaHandler implements GifGenerationLambda{
     }
 
 
-
-
     @Override
     public String handleRequest(SNSEvent snsEvent, Context context) {
 
@@ -111,10 +109,7 @@ public class GIFGenerationLambdaHandler implements GifGenerationLambda{
             context.getLogger().log("Error reading image");
             e.printStackTrace();
         }
-
-
         return "OK";
-
-
     }
+
 }

@@ -14,12 +14,7 @@ import java.util.List;
 
 public interface GifGenerator {
 
-
-
-
-
     List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException;
-
 
     default ByteArrayOutputStream generateGif(BufferedImage srcImage) throws IOException {
         java.util.List<BufferedImage> imgs = generateFrames(srcImage);
@@ -35,6 +30,7 @@ public interface GifGenerator {
     }
 
     public GifWriter getGifWriter();
+
     public Logger getLogger();
 
 }

@@ -37,28 +37,6 @@ public class BlurGifGenerator implements GifGenerator {
 
 
     @Override
-    public ByteArrayOutputStream generateGif(BufferedImage srcImage) throws IOException {
-        List<BufferedImage> imgs = generateFrames(srcImage);
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ImageOutputStream output = new MemoryCacheImageOutputStream(bytes)) {
-            gifWriter.writeGifToStream(imgs, 300, true, output);
-        } catch(Exception e){
-            logger.error("Error generating GIF", e);
-        }
-        return bytes;
-    }
-
-    @Override
-    public GifWriter getGifWriter() {
-        return gifWriter;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
-
-    @Override
     public List<BufferedImage> generateFrames(BufferedImage srcImage) throws IOException {
 
         int width = srcImage.getWidth();
@@ -78,6 +56,16 @@ public class BlurGifGenerator implements GifGenerator {
         return imgs;
     }
 
+
+    @Override
+    public GifWriter getGifWriter() {
+        return gifWriter;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
 
 
 

@@ -1,6 +1,7 @@
 package lambda.imageprocessing.gifgeneration;
 
 import lambda.imageprocessing.TestUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -18,7 +19,7 @@ class CyclicGifGeneratorTest {
     public void testCreateGIF() throws IOException {
         BufferedImage bufferedImage = testUtils.loadImage("photo_test.png");
         List<BufferedImage> imageList = recursiveGifGenerator.generateFrames(bufferedImage);
-        testUtils.writeGif(imageList, "cyclic");
+        Assertions.assertDoesNotThrow(() ->       testUtils.writeGif(imageList, "cyclic"));
     }
 
 
