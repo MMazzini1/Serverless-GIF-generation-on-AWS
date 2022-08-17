@@ -1,6 +1,20 @@
 
 # GIF Generation APP on AWS
 
+- [Introduction](#introduction)
+- [Architecture](#architecture)
+  - [Application Architechture Diagram](#application-architechture-diagram)
+- [Contents of the repository](#contents-of-the-repository)
+- [Some comments on different components](#some-comments-on-different-components)
+  - [Route53](#route53)
+  - [CloudFront + S3 as an origin](#cloudfront--s3-as-an-origin)
+  - [API Gateway](#api-gateway)
+  - [S3 Event Notifications fan-out with SNS](#s3-event-notifications-fan-out-with-sns)
+  - [Lambda](#lambda)
+    - [Lambdas in Java?](#lambdas-in-java)
+    - [Cold start latency](#cold-start-latency)
+- [Improvements](#improvements)
+
 ## Introduction
 
 This repository contains the source code of the GIF generation app hosted in:
@@ -57,14 +71,17 @@ https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-dom
 The front-end requests are routed through API Gateway, which acts as a reverse proxy for accessing different backend services. It also offers lots of other useful features, such as authorization, rate limiting, API keys management, API versioning, transformation, and validation of requests and responses (via mapping templates and models).
 
 In this project, API Gateway exposes just two endpoints. The first one is used for uploading an image to an S3 bucket, and the second one is for getting the generated GIFs from the other bucket. When integrating API Gateway with S3, it´s possible to do it in two ways. You can either use a Lambda Function that saves the object to S3 or directly integrate the endpoint with the S3 bucket, without any lambda function in between.
+
 ![image](https://user-images.githubusercontent.com/25701657/185026401-dc8db11f-afc0-49b7-857d-9d34a70fd157.png)
 
 
 For the upload scenario, it makes sense to use an intermediary Lambda that can resize the image before saving it to S3. The resizing is useful for making sure that the final GIFs have a standard size, and that the file size doesn´t get too big. API Gateway has a maximum payload of 10Mb and Lambda of 6Mb, so it´s important that the final GIF size is not too big. The following resource has a good explanation for setting up a Lambda proxy endpoint to process a multipart request, to upload the image.
+
 https://medium.com/swlh/processing-multipart-form-data-using-api-gateway-and-a-java-lambda-proxy-for-storage-in-s3-e6598033ff3e
 
 For the GIF download endpoint, there´s no need for a lambda function in between, so in this case, the integration is done directly with S3 using an AWS integration type endpoint:
-s3.html]https://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html
+
+https://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html
 
 ### S3 Event Notifications fan-out with SNS
 S3 buckets can publish notifications when an object gets created/updated/deleted in a specific bucket (among others). They can trigger a Lambda function, post a message in an SQS queue or publish to an SNS topic. Each event of a given type (create, update, etc) can only trigger one single target. Because we need to deliver the notification to three Lambda functions (to generate the three GIFs in parallel) we have to configure SNS as the target. Each lambda then subscribes to the SNS topic to receive the event (with an asynchronous invocation type). 
