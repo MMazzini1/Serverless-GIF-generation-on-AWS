@@ -58,6 +58,9 @@ In this project, Route 53 is used for two purposes.
 
 To use Route 53 as a DNS you have to create a Hosted Zone, which holds the configuration for a specific domain. For each domain, you configure records that map different URLs to different IP addresses. There are different types of records depending on the use case (A, AAAA, CNAME, etc). For this app, just a single record of type “alias” was configured. Alias records are Amazon Route 53-specific extensions to DNS used to route traffic to AWS resources (in this case, to a CloudFront distribution). Alias records are free of charge, but hosted zones cost 0.50 USD per month.
 
+![image](https://user-images.githubusercontent.com/25701657/185034343-b3c7136e-25e6-4c91-9823-a079fb7b1d38.png)
+
+
 ### CloudFront + S3 as an origin
 
 An S3 bucket (with website hosting enabled) serves the front end of the app. To enable website hosting, you need to enable it at the bucket level, specify an index document for the root domain, disable the *Block public access setting* on the bucket, and also add a bucket policy that allows getting requests on the bucket for any principal. The process is explained in the following link:
