@@ -1,5 +1,5 @@
 
-﻿# Serverless Image Processing / GIF generation
+# GIF Generation APP on AWS
 
 ## Introduction
 
@@ -64,7 +64,7 @@ For the upload scenario, it makes sense to use an intermediary Lambda that can r
 https://medium.com/swlh/processing-multipart-form-data-using-api-gateway-and-a-java-lambda-proxy-for-storage-in-s3-e6598033ff3e
 
 For the GIF download endpoint, there´s no need for a lambda function in between, so in this case, the integration is done directly with S3 using an AWS integration type endpoint:
-([https://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html](https://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html))
+s3.html]https://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html
 
 ### S3 Event Notifications fan-out with SNS
 S3 buckets can publish notifications when an object gets created/updated/deleted in a specific bucket (among others). They can trigger a Lambda function, post a message in an SQS queue or publish to an SNS topic. Each event of a given type (create, update, etc) can only trigger one single target. Because we need to deliver the notification to three Lambda functions (to generate the three GIFs in parallel) we have to configure SNS as the target. Each lambda then subscribes to the SNS topic to receive the event (with an asynchronous invocation type). 
@@ -84,7 +84,9 @@ The backend of the application is built with four Lambda functions. One Lambda f
 #### Lambdas in Java?
 Java might not be the most common language for Lambda functions. In this project, it was mainly chosen as a matter of convenience, because the GIF generation functions had already been written in Java before having decided to even make this project.
 The following articles offer some good information regarding the most common languages used in Lambda functions, and the pros and cons of using Java in Lambdas, respectively.
+
 https://www.datadoghq.com/state-of-serverless 
+
 https://www.cockroachlabs.com/blog/java-and-aws-lambda/
 
 #### Cold start latency
@@ -97,5 +99,6 @@ There are some things that could be done to improve this app that were left undo
  - Replace the short polling mechanism for something like SSE or Websockets (API Gateway supports the second).
  - Validate image file size and file type in the backend (because front-end only validation is not at all reliable).
  - Use Infrastructure as code (Terraform or ClouFormtion) and/or SAM to create the infrastructure.
- - Using provisioned concurrency for reducing Lambda cold-start times (https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html#optimizing-latency)
+ - Using provisioned concurrency for reducing Lambda cold-start times
+ https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html#optimizing-latency
  
