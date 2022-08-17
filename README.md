@@ -8,7 +8,7 @@ This repository contains the source code of the GIF generation app hosted in:
 [https://gifs.martinmazzini.com/](https://gifs.martinmazzini.com/)
 
 This app serves as an example of a serverless architecture integrating different AWS services (API Gateway, Lambda, S3, SNS, CloudFront, Route53). 
-The app falls completely under the AWS free tier (excluding Route 53 hosted zones, which cost 0.50 USD per month). As a disclaimer, the app is just an excuse to try different AWS services together and could be made a lot simpler if wanted to. Nonetheless, and depending on the non-functional requirements of a real application, this architecture could make sense.  
+The app falls completely under the AWS free tier (excluding Route 53 hosted zones, which cost 0.50 USD per month). As a disclaimer, the app is just an excuse to try different AWS services together and could be made a lot simpler if wanted to. Nonetheless, and depending on the functional and non-functional requirements of a real application, this architecture could make sense.  
 
 
 ## Architecture
