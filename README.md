@@ -1,5 +1,5 @@
 
-# GIF Generation APP on AWS
+# Serverless GIF Generation APP on AWS
 
 - [Introduction](#introduction)
 - [Architecture](#architecture)
