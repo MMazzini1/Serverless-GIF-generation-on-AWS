@@ -29,7 +29,7 @@ The app falls completely under the AWS free tier (excluding Route 53 hosted zone
 
 ### Application Architechture Diagram
 
-The following diagram shows the application architecture diagram with all the components involved. 
+The following diagram shows the application architecture with all the components involved. 
 
 ![image](https://user-images.githubusercontent.com/25701657/185026361-dbb11641-2919-43a7-b433-7d3d3530279d.png)
 
@@ -51,7 +51,7 @@ The following section contains a more detailed explanation of some of the servic
 
 ### Route53 
 
-In this project, Route 53 is used for two purposes.
+In this project, Route 53 is used for two purposes:
 
 - As a Domain name registrar, through which the domain martinmazzini.com was registered. The process of acquiring a domain with Route 53 is pretty straightforward (though not covered in the free tier). 
 - As the DNS service of the application. Route 53 is a highly available, low latency DNS service. 
@@ -71,7 +71,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-dom
 
 ### API Gateway
 
-The front-end requests are routed through API Gateway, which acts as a reverse proxy for accessing different backend services. It also offers lots of other useful features, such as authorization, rate limiting, API keys management, API versioning, transformation, and validation of requests and responses (via mapping templates and models).
+The front-end requests are routed through an API Gateway, which acts as a reverse proxy for accessing different backend services. It also offers lots of other useful features, such as authorization, rate limiting, API keys management, API versioning, transformation, and validation of requests and responses (via mapping templates and models).
 
 In this project, API Gateway exposes just two endpoints. The first one is used for uploading an image to an S3 bucket, and the second one is for getting the generated GIFs from the other bucket. When integrating API Gateway with S3, it´s possible to do it in two ways. You can either use a Lambda Function that saves the object to S3 or directly integrate the endpoint with the S3 bucket, without any lambda function in between.
 
@@ -87,12 +87,17 @@ For the GIF download endpoint, there´s no need for a lambda function in between
 https://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html
 
 ### S3 Event Notifications fan-out with SNS
-S3 buckets can publish notifications when an object gets created/updated/deleted in a specific bucket (among others). They can trigger a Lambda function, post a message in an SQS queue or publish to an SNS topic. Each event of a given type (create, update, etc) can only trigger one single target. Because we need to deliver the notification to three Lambda functions (to generate the three GIFs in parallel) we have to configure SNS as the target. Each lambda then subscribes to the SNS topic to receive the event (with an asynchronous invocation type). 
+S3 buckets can publish notifications when an object gets created/updated/deleted in a specific bucket (among others). They can trigger a Lambda function, post a message in an SQS queue or publish to an SNS topic, as shown in the following image.
 
-![AWS drawio (8)](https://user-images.githubusercontent.com/25701657/185026548-3c51907d-8542-4fae-a3bf-f7b63d4751f1.png)
+![AWS drawio (10)](https://user-images.githubusercontent.com/25701657/185527026-cf0bdf56-f69a-4444-abbb-15e86274d5d9.png)
 
 
-Another common pattern for fan-out is using SNS + SQS together. With this pattern, apart from the fan-out capabilities, we would get the advantages of SQS (buffering of messages, optional batch processing, delays, longer retention period). With SNS, if Lambda exceeds the configured retries amount, the message would get lost. With SQS this would only happen if the retention period expires.
+
+For a given S3 event, only a single target can be configured (one SNS topic, one SQS queue, or one Lambda function). Because we need to deliver the notification to three different Lambda functions (to generate the three GIFs in parallel) we must use an SNS topic as the target. SNS, being a pub-sub service, will allow us to fan-out the S3 event notification. Each Lambda Function subscribes to the SNS topic and will receive the S3 event as part of the SNS message (with an asynchronous invocation type). The following image shows this configuration.
+
+![AWS drawio (12)](https://user-images.githubusercontent.com/25701657/185527125-8ad71f76-1310-4d2b-b4ed-f1e9a4dc9f79.png)
+
+Another common pattern for fan-out (not used in this project) is using SNS + SQS together. With this pattern, apart from the fan-out capabilities, we would get the advantages of SQS (buffering of messages, optional batch processing, delays, longer retention period). With SNS, if Lambda exceeds the configured retries amount, the message would get lost. With SQS this would only happen if the retention period expires.
 
 ![image](https://user-images.githubusercontent.com/25701657/185026592-419dc3d0-712f-4586-9685-4d864ce2b9c4.png)
 
@@ -114,7 +119,7 @@ The cold start latency of the Lambda functions proves to be significant. This is
 
 
 ## Improvements 
-There are some things that could be done to improve this app that were left undone.
+There are some things that could be done to improve this app that were left undone:
 
  - Replace the short polling mechanism for something like SSE or Websockets (API Gateway supports the second).
  - Validate image file size and file type in the backend (because front-end only validation is not at all reliable).
