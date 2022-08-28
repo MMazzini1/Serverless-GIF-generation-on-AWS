@@ -1,20 +1,3 @@
-
-# Serverless GIF Generation app on AWS
-
-- [Introduction](#introduction)
-- [Architecture](#architecture)
-  - [Application Architechture Diagram](#application-architechture-diagram)
-- [Contents of the repository](#contents-of-the-repository)
-- [Some comments on different components](#some-comments-on-different-components)
-  - [Route53](#route53)
-  - [CloudFront + S3 as an origin](#cloudfront--s3-as-an-origin)
-  - [API Gateway](#api-gateway)
-  - [S3 Event Notifications fan-out with SNS](#s3-event-notifications-fan-out-with-sns)
-  - [Lambda](#lambda)
-    - [Lambdas in Java?](#lambdas-in-java)
-    - [Cold start latency](#cold-start-latency)
-- [Improvements](#improvements)
-
 ## Introduction
 
 This repository contains the source code of the GIF generation app hosted in:
@@ -25,17 +8,26 @@ This app serves as an example of a serverless architecture integrating different
 The app falls completely under the AWS free tier (excluding Route 53 hosted zones, which cost 0.50 USD per month). As a disclaimer, the app is just an excuse to try different AWS services together and could be made a lot simpler if wanted to. Nonetheless, and depending on the functional and non-functional requirements of a real application, this architecture could make sense.  
 
 
-## Architecture
-
-### Application Architechture Diagram
-
 The following diagram shows the application architecture with all the components involved. 
 
 ![image](https://user-images.githubusercontent.com/25701657/185026361-dbb11641-2919-43a7-b433-7d3d3530279d.png)
 
 
-
 The app uses Route 53 as a DNS service. An S3 bucket hosts the static website, served through a CloudFront distribution which acts as a CDN. All subsequent requests go through an API Gateway to connect to the backend. Image upload requests trigger a Lambda function that resizes the image to a fixed size and stores it in an S3 bucket. The creation of the image object in the bucket triggers an S3 event notification with SNS as the target. SNS is necessary for fanning out of the S3 event notification to multiple targets. The targets are three different Lambda functions that generate three different GIFs in parallel. Each lambda function gets the resized image from the bucket, runs a particular image processing algorithm, joins the frames together to build a GIF, and stores the GIF in a second bucket. The front-end gets the GIFs from this bucket, via an API Gateway endpoint, through a simple short-polling mechanism.
+
+
+# Serverless GIF Generation app on AWS
+
+- [Contents of the repository](#contents-of-the-repository)
+- [Some comments on different components](#some-comments-on-different-components)
+  - [Route53](#route53)
+  - [CloudFront + S3 as an origin](#cloudfront--s3-as-an-origin)
+  - [API Gateway](#api-gateway)
+  - [S3 Event Notifications fan-out with SNS](#s3-event-notifications-fan-out-with-sns)
+  - [Lambda](#lambda)
+    - [Lambdas in Java?](#lambdas-in-java)
+    - [Cold start latency](#cold-start-latency)
+- [Improvements](#improvements)
 
 ## Contents of the repository
 
